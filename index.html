@@ -134,6 +134,20 @@ kbd{font:11px var(--mono);border:1px solid var(--line);border-radius:4px;padding
       <ul class="msgs" id="jsonMsgs"></ul>
     </div></details>
 
+    <details class="panel adv-only" open id="panelPrompt"><summary>Gerador de prompt <span class="tag">avançado</span></summary><div class="body">
+      <p class="hint">Monta um prompt completo (formato, faixas, fórmulas do render, receitas e exemplo) para uma IA como ChatGPT, Claude ou Gemini criar o estilo. Depois cole a resposta dela abaixo e aplique.</p>
+      <label class="field"><span>Visual desejado</span><textarea id="pgLook" rows="4" placeholder="Ex.: noite de verão em Lisboa nos anos 80, filme tungstênio vencido: sombras esverdeadas, luzes quentes que estouram, muito grão, vinheta forte."></textarea></label>
+      <label class="field"><span>Referências</span><input type="text" id="pgRef" placeholder="Filmes, fotógrafos, emulsões, época… (opcional)"></label>
+      <label class="field"><span>Ponto de partida</span><select id="pgBase"><option value="new">Do zero</option><option value="current">Estilo atual (a IA ajusta o que está aberto)</option></select></label>
+      <label class="field"><span>Escopo</span><select id="pgScope"><option value="all">Estilo completo (cor, película, captura, overlays)</option><option value="color">Só cor e tons (sem película nem overlays)</option></select></label>
+      <label class="field"><span>LUT (.cube)</span><select id="pgLut"><option value="0">Não pedir LUT</option><option value="9">Pedir LUT 9³ (729 linhas)</option><option value="17">Pedir LUT 17³ (4.913 linhas)</option></select></label>
+      <textarea class="code" id="pgOut" readonly spellcheck="false" style="min-height:220px"></textarea>
+      <div class="actions"><button class="btn sm primary" id="pgCopy">Copiar prompt</button><button class="btn sm" id="pgDownload">Baixar .md</button><span class="stats" id="pgStats"></span></div>
+      <label class="field" style="grid-template-columns:1fr"><span>Resposta da IA (cole aqui o bloco JSON e, se pediu, o bloco cube)</span><textarea class="code" id="pgIn" spellcheck="false" style="min-height:140px"></textarea></label>
+      <div class="actions"><button class="btn sm primary" id="pgApply">Aplicar resposta ao estilo</button></div>
+      <ul class="msgs" id="pgMsgs"></ul>
+    </div></details>
+
     <details class="panel adv-only" open id="panelCube"><summary>Editor de .cube <span class="tag">avançado</span></summary><div class="body">
       <div class="stats" id="cubeStats">Nenhuma LUT carregada.</div>
       <textarea class="code" id="cubeText" spellcheck="false" placeholder="TITLE &quot;Meu estilo&quot;&#10;LUT_3D_SIZE 17&#10;DOMAIN_MIN 0.0 0.0 0.0&#10;DOMAIN_MAX 1.0 1.0 1.0&#10;0.000000 0.000000 0.000000&#10;…"></textarea>
@@ -895,6 +909,135 @@ $("#btnJsonApply").onclick = () => {
 $("#btnJsonRevert").onclick = () => { jsonDirty = false; $("#jsonMsgs").innerHTML = ""; refreshOutputs(); };
 $("#btnJsonCopy").onclick = () => navigator.clipboard?.writeText(jsonTa.value);
 
+/* ============================ gerador de prompt ============================ */
+const FENCE = "`".repeat(3);
+const EX_GOTICO = `{
+  "format": "estilo", "version": "1.0.0", "id": "gotico58", "name": "Gótico 58", "category": "terror", "era": 1958,
+  "description": "Vermelho denso sobre penumbra de castelo, pele pálida, céu de tempestade.",
+  "license": "CC-BY-4.0",
+  "capture": { "aspect": "1.66:1", "iso": 100, "shutter": "1/48" },
+  "color": { "exposure": -0.2, "contrast": 1.3, "saturation": 1.5, "hue": -18, "temperature": 12 },
+  "film": { "grain": { "amount": 0.25, "size": 1.2 }, "halation": { "amount": 0.3, "color": "#C81E1E" }, "vignette": 0.45 }
+}`;
+const EX_VHS = `{
+  "format": "estilo", "version": "1.0.0", "id": "vhs87", "name": "VHS 87", "category": "terror", "era": 1987,
+  "description": "Fita gasta, cor que escorre, data no canto. A locadora às duas da manhã.",
+  "license": "CC-BY-4.0",
+  "capture": { "aspect": "1.33:1", "iso": 1600, "shutter": "1/60" },
+  "color": { "exposure": 0.05, "contrast": 0.92, "saturation": 1.35, "hue": 10 },
+  "film": { "grain": { "amount": 0.4, "size": 0.8 } },
+  "overlays": [ { "type": "text", "text": "PLAY", "anchor": "top-left", "font": "mono" }, { "type": "timestamp", "anchor": "bottom-right", "font": "mono" } ]
+}`;
+function buildPrompt() {
+  const look = $("#pgLook").value.trim(), ref = $("#pgRef").value.trim(), fromCurrent = $("#pgBase").value === "current", colorOnly = $("#pgScope").value === "color", lutN = +$("#pgLut").value;
+  const L = [];
+  L.push("Você é um colorista de cinema e engenheiro de imagem. Sua tarefa é criar um ESTILO FOTOGRÁFICO para o app Penumbra, no formato aberto “Estilo 1.0” (um documento JSON, opcionalmente com uma LUT .cube), que reproduza o visual descrito abaixo. Os números que você escolher serão aplicados exatamente como descrito na seção “Como o app calcula”; por isso, pense nos valores com as fórmulas em mente.", "");
+  L.push("## 1. Visual desejado", "", look || "(descreva aqui o visual desejado)");
+  if (ref) L.push("", "Referências: " + ref);
+  if (fromCurrent) L.push("", "Ponto de partida: ajuste o estilo atual abaixo conforme o visual desejado, mantendo o que não precisar mudar (inclusive id e name, salvo se o visual pedir outro nome).", "", FENCE + "json", docText(false).trimEnd(), FENCE);
+  if (colorOnly) L.push("", "Escopo: mexa apenas em cor e tons (color.*). Não inclua film, overlays, title_card nem capture" + (fromCurrent ? "; copie-os do estilo atual se existirem." : "."));
+  L.push("", "## 2. Como responder", "",
+    `1. No máximo 4 linhas em português explicando as escolhas principais (opcional).`,
+    `2. Depois, UM bloco ${FENCE}json com o documento completo: JSON válido, sem comentários, sem vírgula sobrando, sem campos além dos listados abaixo.`);
+  if (lutN) L.push(`3. Depois, UM bloco ${FENCE}cube com a LUT 3D (ver seção 6).`);
+  L.push(`${lutN ? 4 : 3}. Nada depois disso.`);
+  L.push("", "## 3. Regras do documento", "",
+    "- Escreva só o que difere do padrão: campos iguais ao padrão devem ser omitidos.",
+    '- Obrigatórios: "format": "estilo", "version": "1.0.0", "id", "name".',
+    '- "id": minúsculas, números e hífen, de 1 a 64 caracteres, começando por letra ou número (ex.: "lisboa-84"). Sirva de nome de arquivo.',
+    '- "name": 1 a 40 caracteres. "description": até 200 caracteres, em português, evocativa e curta. "license": identificador SPDX, use "CC-BY-4.0".',
+    '- "category": "classico", "terror" ou "outro". "era": ano inteiro entre 1888 e 2100 (só se fizer sentido).',
+    "- Cores são strings hexadecimais “#RRGGBB”. Números usam ponto decimal e, no máximo, 3 casas.",
+    "- Valores fora das faixas abaixo são limitados pelo app; fique sempre dentro delas.");
+  L.push("", "## 4. Campos, unidades e faixas", "",
+    "| Campo | Faixa | Padrão | Efeito |", "|---|---|---|---|",
+    "| color.exposure | -2 a 2 | 0 | EV; luz linear × 2^EV |",
+    "| color.contrast | 0 a 3 | 1 | curva de potência em torno do cinza médio (0,18 linear); <1 achata, >1 endurece |",
+    "| color.saturation | 0 a 4 | 1 | 0 = preto e branco; 1 = original; 2 = o dobro |",
+    "| color.hue | -180 a 180 | 0 | graus; gira todas as cores (use pouco, ±5 a ±25) |",
+    "| color.temperature | -100 a 100 | 0 | positivo = quente (mais vermelho, menos azul); ±100 = ±25% em R e B |",
+    "| color.tint | -100 a 100 | 0 | positivo = magenta, negativo = verde; ±100 = ±25% em G |",
+    "| color.highlights | -1 a 1 | 0 | desloca as altas luzes (negativo recupera, positivo estoura) |",
+    "| color.shadows | -1 a 1 | 0 | desloca as sombras (positivo abre, negativo fecha) |",
+    "| color.fade | 0 a 1 | 0 | levanta o preto (até ~30% em 1): visual “lavado”, de filme gasto |",
+    "| color.curves.rgb / r / g / b | 2 a 16 pontos [x,y] em 0..1, x crescente | sem curva | curva tonal monótona suave; o canal “rgb” vale para os três, depois r, g, b |",
+    "| color.split_tone | shadows e highlights “#RRGGBB”, balance -1..1 (0), amount 0..1 (1) | ausente | tinge sombras e altas luzes sem mudar a luminância; balance > 0 empurra a divisão para as altas luzes |",
+    "| color.lut | file, mix 0..1 (1), space | ausente | LUT .cube aplicada depois de curvas e tons |",
+    "| film.grain | amount 0..1 (0), size 0.1..5 (1), roughness 0..1 (0.5) | ausente | grão somado em sRGB; mais visível nos meios-tons. amount 0.15–0.35 é discreto, 0.5+ é pesado |",
+    "| film.halation | amount 0..1 (0), radius 0..1 (0.5), color “#RRGGBB” (#FF3B1F) | ausente | brilho colorido ao redor das altas luzes, como em filme (vermelho-alaranjado) |",
+    "| film.vignette | 0 a 1 | 0 | escurece os cantos; 0.2–0.5 é típico |",
+    "| film.gate_weave / damage / flicker | 0 a 1 | 0 | só no visor do app (tremor do quadro, riscos/poeira, oscilação de luz); use 0–0.3 |",
+    '| capture.aspect | "1.33:1","1.37:1","1.66:1","1.85:1","2.00:1","2.39:1","3:4","9:16","1:1","full" | não definido | recorte central do quadro |',
+    '| capture.iso | inteiro 6 a 12800 | — | informativo (aparece na interface) |',
+    '| capture.shutter | "1/48" (formato 1/N) | — | informativo |',
+    '| overlays | até 8 itens: {type: "text"\\|"rec_dot"\\|"timestamp", text (só em "text", até 64), anchor: "top-left"\\|"top-right"\\|"bottom-left"\\|"bottom-right"\\|"center", font: "mono"\\|"serif"\\|"sans"} | — | textos e marcas sobre a imagem (ex.: “PLAY”, ● REC, data) |',
+    '| title_card.style | "none", "didone-italic" ou "subtitle" | — | estilo da cartela de título |');
+  L.push("", "## 5. Como o app calcula (ordem exata)", "",
+    "1. Linearizar sRGB → luz linear.",
+    "2. Exposição: luz × 2^EV.",
+    "3. Temperatura: R × (1 + 0,25·t/100), B × (1 − 0,25·t/100). Tinta: G × (1 − 0,25·tint/100).",
+    "4. Contraste: 0,18 · (luz/0,18)^contraste.",
+    "5. Saturação: interpola entre a luminância Rec.709 e a cor (fator = saturation). Matiz: rotação em torno do eixo de cinza (a mesma do hue-rotate do CSS).",
+    "6. Volta para sRGB codificado e aplica, nesta ordem: curvas (rgb, depois r, g, b) → realces/sombras (±0,25 no máximo, ponderados por (1−L)² e L²) → fade (o preto sobe até 0,3·fade) → split-tone (desloca a croma na direção da cor escolhida, força 0,5·amount; sombras abaixo, altas luzes acima de L = 0,5 + 0,25·balance) → LUT (interpolação tetraédrica, misturada por mix).",
+    "7. Volta para luz linear: halation (máscara das luzes acima de ~0,55 de luminância, desfocada ~2,5% do maior lado, tingida pela cor e somada em “screen”) → vinheta (1 − v·smoothstep(0,4; 1; raio)) .",
+    "8. Codifica em sRGB, soma o grão (amplitude = amount·0,15, mais forte nos meios-tons) e recorta para a proporção.",
+    "Consequências práticas: temperatura, tinta, contraste, saturação e matiz agem na luz linear (efeito mais “físico”); curvas, tons e split-tone agem na imagem já codificada (efeito mais “visual”). Não repita a mesma correção em dois lugares (ex.: contraste e curva em S ao mesmo tempo, ou LUT que já traz a cor e sliders iguais).");
+  L.push("", "## 6. LUT (.cube)", "");
+  if (lutN) L.push(
+    `Gere também uma LUT 3D ${lutN}³ num bloco ${FENCE}cube, exatamente neste formato:`, "",
+    FENCE + "cube", `TITLE "Nome do estilo"`, `LUT_3D_SIZE ${lutN}`, "DOMAIN_MIN 0.0 0.0 0.0", "DOMAIN_MAX 1.0 1.0 1.0", "r g b   (uma linha por entrada, valores de 0 a 1 com 6 casas)", FENCE, "",
+    `- Devem existir exatamente ${lutN ** 3} linhas de dados (${lutN}×${lutN}×${lutN}), sem linhas em branco entre elas.`,
+    `- Ordem: o índice do VERMELHO varia mais rápido, depois o verde, depois o azul. A linha i (a partir de 0) corresponde à entrada r = (i mod ${lutN}), g = (⌊i/${lutN}⌋ mod ${lutN}), b = ⌊i/${lutN * lutN}⌋, cada uma dividida por ${lutN - 1}.`,
+    "- Entrada e saída em sRGB codificado (0 = preto, 1 = branco). A LUT identidade devolve exatamente a própria entrada; parta dela e aplique o look (curva tonal, balanço de cor por luminosidade, cruzamento de canais).",
+    "- Se não conseguir calcular todas as linhas com precisão, NÃO escreva o bloco cube: entregue só o JSON (use curvas e split-tone para o look).",
+    `- No JSON, inclua "color.lut": { "file": "<id>.cube", "mix": 1, "space": "srgb" } (o mesmo id do estilo; não escreva sha256 nem size) e deixe os controles de cor neutros ou quase neutros para não aplicar a mesma correção duas vezes.`);
+  else L.push("Não gere LUT: não inclua color.lut e entregue apenas o JSON. Faça o look com os controles de cor, curvas e split-tone.");
+  L.push("", "## 7. Receitas (ponto de partida; adapte)", "",
+    "- Filme antigo/lavado: fade 0,08–0,25; contrast 0,9–1,05; saturation 0,8–1,1; grain 0,25–0,5; vignette 0,2–0,4; curva rgb levantando o preto, por exemplo [[0,0.06],[0.5,0.5],[1,0.95]].",
+    "- Cinema “teal & orange”: split_tone com sombras azul-esverdeadas (#1F4F5F) e altas luzes alaranjadas (#E8A050), amount 0,5–0,8; temperature +5 a +15; contrast 1,1–1,25.",
+    "- Preto e branco: saturation 0; contrast 1,15–1,4; curva em S (por exemplo [[0,0],[0.25,0.18],[0.75,0.84],[1,1]]); grain 0,3–0,5.",
+    "- Noite/tungstênio: temperature +15 a +35; tint −5 a +10; exposure −0,3 a +0,2; shadows −0,1 a −0,3; halation 0,3–0,5 com cor #FF6A2B.",
+    "- Dia frio/documental: temperature −10 a −25; saturation 0,75–0,95; contrast 1,05–1,2; highlights −0,15.",
+    "- Terror: contrast 1,25–1,5; saturation baixa (0,6–0,9) ou muito alta numa só cor (use hue e split_tone); vignette 0,4–0,6; sombras fechadas (shadows −0,2).",
+    "- Vídeo caseiro/VHS: aspect 1.33:1; saturation 1,2–1,4; hue ±10; grain 0,35–0,5 com size 0,8; overlays: texto “PLAY” e timestamp em fonte mono.",
+    "- Moderação: um estilo bom costuma mexer em poucos controles com valores moderados (exposure ±0,3, temperature ±20, saturation 0,7–1,4). Valores nos extremos só para efeitos deliberados.");
+  L.push("", "## 8. Exemplos de documentos válidos", "", FENCE + "json", EX_GOTICO, FENCE, "", FENCE + "json", EX_VHS, FENCE);
+  L.push("", "## 9. Checklist antes de responder", "",
+    "- O JSON é válido e só tem os campos da seção 4.",
+    "- id no padrão, name ≤ 40, description ≤ 200, todos os valores dentro das faixas.",
+    "- Cada controle alterado tem motivo ligado ao visual pedido; nada de ajustes que se anulam.",
+    lutN ? `- O bloco cube tem exatamente ${lutN ** 3} linhas de dados e a ordem (vermelho mais rápido).` : "- Não há color.lut.",
+    "- A resposta segue o formato da seção 2.");
+  return L.join("\n") + "\n";
+}
+function updatePrompt() {
+  if (!$("#pgOut")) return; const t = buildPrompt(); $("#pgOut").value = t;
+  $("#pgStats").textContent = `${t.length.toLocaleString("pt-BR")} caracteres · ~${Math.round(t.length / 3.6).toLocaleString("pt-BR")} tokens`;
+}
+["pgLook", "pgRef", "pgBase", "pgScope", "pgLut"].forEach(id => $("#" + id).addEventListener("input", updatePrompt));
+$("#pgCopy").onclick = async () => { updatePrompt(); try { await navigator.clipboard.writeText($("#pgOut").value); $("#pgCopy").textContent = "Copiado ✓"; } catch { $("#pgOut").select(); document.execCommand("copy"); $("#pgCopy").textContent = "Copiado ✓"; } setTimeout(() => $("#pgCopy").textContent = "Copiar prompt", 1800); };
+$("#pgDownload").onclick = () => { updatePrompt(); download("prompt-" + filesBase() + ".md", $("#pgOut").value, "text/markdown"); };
+$("#pgApply").onclick = () => {
+  const box = $("#pgMsgs"); box.innerHTML = ""; const msg = (l, t) => box.append(el("li", { class: l }, t));
+  const text = $("#pgIn").value; if (!text.trim()) { msg("warn", "Cole primeiro a resposta da IA."); return; }
+  const blocks = [...text.matchAll(/```[ \t]*([\w-]*)[ \t]*\r?\n([\s\S]*?)```/g)].map(m => ({ lang: m[1].toLowerCase(), body: m[2].trim() }));
+  let jsonStr = (blocks.find(b => b.lang === "json") || blocks.find(b => b.body.startsWith("{")))?.body;
+  const cubeStr = blocks.find(b => b.lang === "cube")?.body || blocks.find(b => /LUT_3D_SIZE|LUT_1D_SIZE/.test(b.body))?.body;
+  if (!jsonStr) { const a = text.indexOf("{"), z = text.lastIndexOf("}"); if (a >= 0 && z > a) jsonStr = text.slice(a, z + 1); }
+  if (!jsonStr) { msg("err", "Não encontrei um bloco JSON na resposta."); return; }
+  let d; try { d = JSON.parse(jsonStr); } catch (e) { msg("err", "O JSON da resposta é inválido: " + e.message); return; }
+  if (cubeStr) {
+    try { parseCube(cubeStr); } catch (e) { msg("err", "O bloco cube é inválido: " + e.message + " (o JSON não foi aplicado)."); return; }
+    d.color = d.color || {}; d.color.lut = Object.assign({ file: (d.id || S.id || "estilo") + ".cube", mix: 1, space: "srgb" }, d.color.lut || {});
+    delete d.color.lut.sha256; delete d.color.lut.size;
+    const f = d.color.lut.file; if (!/^[A-Za-z0-9._-]{1,64}\.cube$/.test(f)) d.color.lut.file = (d.id || "estilo") + ".cube";
+    setLutText(cubeStr + "\n", true); LUT.file = d.color.lut.file; LUT.fileAuto = false;
+  }
+  jsonTa.value = JSON.stringify(d, null, 2); jsonDirty = true; $("#btnJsonApply").click();
+  [...$("#jsonMsgs").children].forEach(li => msg(li.className, li.textContent));
+  if (cubeStr) msg("ok", `LUT aplicada (${LUT.parsed.size}³).`);
+};
+
 /* ============================ saídas ============================ */
 function refreshOutputs() {
   if (!jsonDirty && document.activeElement !== jsonTa) jsonTa.value = docText();
@@ -902,7 +1045,7 @@ function refreshOutputs() {
   const m = validate(), box = $("#valMsgs"); box.innerHTML = ""; m.forEach(x => box.append(el("li", { class: x.l }, x.t)));
   const bad = m.some(x => x.l === "err"); $("#btnZip").disabled = $("#btnZipTop").disabled = $("#btnJson").disabled = bad;
   $("#btnCube").disabled = !LUT.text.trim();
-  if (!jsonDirty) {/* estado único */}
+  if (document.body.classList.contains("adv") && document.activeElement?.closest?.("#panelPrompt") == null) updatePrompt();
 }
 function filesBase() { return S.id || "estilo"; }
 function buildZip() {
