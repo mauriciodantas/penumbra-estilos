@@ -36,7 +36,7 @@ header.top{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:ce
 .switch input:checked::after{left:16px;background:var(--accent-fg)}
 main{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,1fr);gap:16px;padding:16px;max-width:1500px;margin:0 auto;align-items:start}
 @media (max-width:900px){main{grid-template-columns:1fr;padding:12px 16px}}
-.stage{position:sticky;top:64px}
+.stage{position:sticky;top:calc(var(--hh) + 8px)}
 @media (max-width:900px){.stage{position:static}}
 .view{background:#000;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;min-height:260px;max-height:calc(100vh - 230px);overflow:hidden;position:relative}
 .view canvas{max-width:100%;max-height:calc(100vh - 230px);display:block}
@@ -61,7 +61,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:18px}
 .field>span{color:var(--muted);font-size:13px}
 .field input[type=text],.field input[type=number],.field select,textarea.code,.field textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
 .field input[type=color]{width:44px;height:28px;padding:0;border:1px solid var(--line);border-radius:6px;background:none}
-.field .inline{display:flex;gap:8px;align-items:center}
+.field .inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .hint{font-size:12px;color:var(--muted);margin:6px 0}
 .adv-only{display:none!important}
 body.adv .adv-only{display:revert!important}
@@ -88,7 +88,6 @@ footer{max-width:1500px;margin:0 auto;padding:4px 16px 40px;color:var(--muted);f
 .chips .lbl{font-size:12px;color:var(--muted);margin-right:2px}
 .grid9{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}
 .tile{background:var(--panel2);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;padding:0;text-align:left;color:var(--fg)}
-.tile:hover,.tile:focus-visible{border-color:var(--accent);outline:none}
 .tile canvas{width:100%;display:block;background:#000;aspect-ratio:3/2;object-fit:cover}
 .tile span{display:block;padding:4px 7px 6px;font-size:11px;color:var(--muted);line-height:1.3;min-height:34px}
 .tile b{display:block;color:var(--fg);font-weight:600}
@@ -96,49 +95,124 @@ footer{max-width:1500px;margin:0 auto;padding:4px 16px 40px;color:var(--muted);f
 .fav{position:relative;width:76px}
 .fav img{width:100%;border-radius:6px;cursor:pointer;display:block;border:1px solid var(--line)}
 .fav button{position:absolute;top:2px;right:2px;border:0;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;width:18px;height:18px;line-height:16px;cursor:pointer;font-size:12px;padding:0}
+
+:root{--hh:64px;--sh:0px}
+html{scroll-padding-top:calc(var(--hh) + var(--sh) + 12px)}
+main>*{min-width:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tile:hover{border-color:var(--accent)}
+.row{grid-template-columns:132px minmax(0,1fr) 64px 28px}
+.row .tip{grid-column:1/-1;font-size:13px;color:var(--muted);background:var(--panel2);border-radius:8px;padding:6px 9px}
+.q,.rst{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:50%;width:20px;height:20px;line-height:17px;font-size:12px;cursor:pointer;padding:0;margin-left:5px}
+.rst{margin:0;width:26px;height:26px;font-size:14px;line-height:22px}
+.q:hover,.rst:hover{color:var(--fg);border-color:var(--muted)}
+.chip.on::before,.btn.on::before{content:"✓ "}
+.field input,.field select,.field textarea{min-width:0}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:60;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+#hist{position:absolute;left:8px;bottom:8px;width:150px;height:48px;background:rgba(0,0,0,.5);border-radius:6px;display:none}
+#hist.show{display:block}
+.view{position:relative}
+.menu{position:relative}.menu>summary{list-style:none;cursor:pointer}.menu>summary::-webkit-details-marker{display:none}
+.menupop{position:absolute;right:0;top:calc(100% + 6px);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:8px;min-width:230px;z-index:30;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.only-m{display:none}.credit-m{display:none}
+#ptTable{margin:8px 0}
+.pt{display:grid;grid-template-columns:22px 1fr 1fr 30px;gap:6px;align-items:center;margin:4px 0;font-size:13px}
+.pt.sel{background:var(--panel2);border-radius:6px}
+.pt input{width:100%;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:3px 5px;font:13px var(--mono)}
+#curve{max-width:100%;height:auto;aspect-ratio:1}
+.brand small,.panel>summary .tag,.tile span,.stagebar .info,kbd,.stats{font-size:12px}
+.hint{font-size:13px}
+@media (max-width:900px){
+  main{display:block;padding-top:6px}
+  header.top{padding:6px 12px;gap:6px}
+  .brand{font-size:19px}.brand small{display:none}
+  .hide-m{display:none!important}
+  .only-m{display:block}.credit-m{display:block}
+  .stage{position:sticky;top:var(--hh);z-index:15;background:var(--bg);padding:4px 0 6px;margin:0 0 6px}
+  .view{min-height:120px;max-height:30vh}.view canvas#cv{max-height:30vh}
+  .stage>.hint,.stagebar .info{display:none}
+  .stagebar{flex-wrap:nowrap;overflow-x:auto;margin-top:6px;padding-bottom:2px}
+  .stagebar>*{flex:none}
+  #controls{padding-bottom:40px}
+}
+@media (max-width:520px){.row{grid-template-columns:84px minmax(0,1fr) 60px 32px}.field{grid-template-columns:1fr}}
+@media (pointer:coarse),(max-width:900px){
+  .btn{min-height:40px}.btn.sm{min-height:38px}
+  input[type=range]{height:34px}
+  .row input[type=number]{height:40px;font-size:14px}
+  .q,.rst{width:32px;height:32px;line-height:28px}
+  .chip{padding:8px 14px;min-height:38px}
+  .switch input{width:46px;height:26px}.switch input::after{width:20px;height:20px}.switch input:checked::after{left:23px}
+  .field input[type=text],.field input[type=number],.field select{min-height:40px}
+  .fav button{width:28px;height:28px;line-height:24px}.fav{width:84px}
+  .pt input{min-height:36px}
+  .tabs button{padding:8px 14px;min-height:38px}
+}
+.favbtn{border:0;background:none;padding:0;width:100%;cursor:pointer;display:block}
 a{color:var(--accent)}
 kbd{font:11px var(--mono);border:1px solid var(--line);border-radius:4px;padding:0 4px}
 </style>
 </head>
 <body>
-<header class="top">
+<header class="top" id="top">
   <div class="brand">Estilo Studio<small>Penumbra · Estilo 1.0</small></div>
-  <button class="btn" id="btnUndo" title="Desfazer (Ctrl/Cmd+Z)">↶</button>
-  <button class="btn" id="btnRedo" title="Refazer (Ctrl/Cmd+Shift+Z)">↷</button>
-  <button class="btn" id="btnImport">Abrir estilo / .cube…</button>
-  <button class="btn" id="btnReset">Novo</button>
-  <label class="switch" title="Edição direta do JSON e do .cube"><input type="checkbox" id="advToggle"><span>Modo avançado</span></label>
-  <button class="btn primary" id="btnZipTop">Baixar estilo completo (.zip)</button>
+  <button class="btn" id="btnUndo" title="Desfazer (Ctrl/Cmd+Z)" aria-label="Desfazer">↶</button>
+  <button class="btn" id="btnRedo" title="Refazer (Ctrl/Cmd+Shift+Z)" aria-label="Refazer">↷</button>
+  <button class="btn hide-m" id="btnImport">Abrir estilo / .cube…</button>
+  <button class="btn hide-m" id="btnReset">Novo</button>
+  <label class="switch hide-m" title="Edição direta do JSON e do .cube"><input type="checkbox" id="advToggle"><span>Modo avançado</span></label>
+  <details class="menu only-m"><summary class="btn" aria-label="Mais ações">⋯</summary><div class="menupop">
+    <button class="btn" id="btnImport2">Abrir estilo / .cube…</button>
+    <button class="btn" id="btnReset2">Novo</button>
+    <label class="switch" title="Edição direta do JSON e do .cube"><input type="checkbox" id="advToggle2"><span>Modo avançado</span></label>
+  </div></details>
+  <button class="btn primary" id="btnZipTop">Baixar<span class="hide-m"> estilo completo</span> (.zip)</button>
   <input type="file" id="fileStyle" accept=".json,.zip,.cube,.lut,application/json,application/zip" hidden>
   <input type="file" id="fileImg" accept="image/*" hidden>
 </header>
 
 <main>
   <section class="stage">
-    <div class="view" id="view"><canvas id="cv" width="10" height="10"></canvas></div>
+    <div class="view" id="view"><canvas id="cv" width="10" height="10" role="img" aria-label="Prévia da imagem com o estilo"></canvas><canvas id="hist" width="440" height="140" aria-hidden="true"></canvas></div>
     <input type="range" class="split" id="splitPos" min="0" max="100" value="50" aria-label="Divisor antes/depois">
     <div class="stagebar">
-      <button class="btn sm" id="btnPickImg">Imagem de referência…</button>
+      <button class="btn sm" id="btnPickImg">Minha foto…</button>
       <select class="btn sm" id="scene" aria-label="Cena de referência"></select>
-      <button class="btn sm" id="btnHold" title="Segure para ver o original">Segure: original</button>
-      <button class="btn sm" id="btnSplit">Antes | Depois</button>
+      <button class="btn sm" id="btnHold" title="Segure para ver a foto sem estilo">Segure: ver original</button>
+      <button class="btn sm" id="btnSplit" aria-pressed="false" title="Divide a prévia: original à esquerda, com estilo à direita">Antes | Depois</button>
+      <button class="btn sm" id="btnAB" title="Guarda a versão atual e alterna entre duas versões do estilo">A/B</button>
+      <button class="btn sm" id="btnHist" aria-pressed="false" title="Mostra o histograma da imagem com estilo">Histograma</button>
       <span class="info" id="info"></span>
     </div>
-    <p class="hint"><span id="credit"></span> Arraste uma foto sua para cima do quadro. A prévia segue o render de referência do app (cor, curvas, tons, LUT, halation, vinheta, grão e proporção). <em>Gate weave</em>, <em>damage</em> e <em>flicker</em> só existem no visor do app; o grão aqui usa a mesma semente do app, mas não é bit a bit idêntico.</p>
+    <p class="hint"><span class="credit"></span> Arraste uma foto sua para cima do quadro. A prévia segue o render de referência do app (cor, curvas, tons, LUT, halation, vinheta, grão e proporção). <em>Gate weave</em>, <em>damage</em> e <em>flicker</em> só existem no visor do app; o grão aqui usa a mesma semente do app, mas não é bit a bit idêntico.</p>
   </section>
 
   <section id="controls">
     <details class="panel" open id="panelDiscover"><summary>Descobrir <span class="tag">sem direção?</span></summary><div class="body">
       <p class="hint">Não sabe por onde começar? Escolha um clima (ou nenhum) e explore looks inéditos. Clique no que gostar: a grade passa a mostrar variações bem perto dele, e você vai evoluindo o look sem mexer em nenhum controle.</p>
       <div class="chips" id="dsMoods"></div>
-      <div class="actions"><button class="btn primary" id="dsSurprise">Surpreenda-me</button><button class="btn" id="dsExplore">Explorar 9 looks novos</button><button class="btn" id="dsVary">Variar o atual</button></div>
+      <div class="actions"><button class="btn primary" id="dsSurprise">Surpreenda-me</button><button class="btn" id="dsExplore">Explorar 9 looks novos</button><button class="btn" id="dsVary">Variar o atual</button><button class="btn" id="dsAI">Criar com IA</button></div>
       <div class="row"><span class="lb">Ousadia</span><input type="range" id="dsBold" min="0" max="1" step="0.05" value="0.5" aria-label="Ousadia"><span class="stats" id="dsBoldV">50%</span></div>
       <div class="chips" id="dsLocks"></div>
-      <div class="grid9" id="dsGrid"></div>
+      <div class="grid9" id="dsGrid" aria-label="Looks sugeridos"></div>
       <div class="actions"><button class="btn sm" id="dsFav">★ Guardar este look</button><span class="stats" id="dsMode"></span></div>
       <div class="favs" id="dsFavs"></div>
     </div></details>
-    <details class="panel" open><summary>Identidade</summary><div class="body" id="pId"></div></details>
+    <details class="panel" id="panelPrompt"><summary>Criar com IA <span class="tag">ChatGPT, Claude, Gemini…</span></summary><div class="body">
+      <p class="hint">Descreva o visual em palavras. A página monta um pedido completo para a sua IA preferida; depois você cola a resposta dela aqui e o estilo é aplicado.</p>
+      <label class="field"><span>1. Visual desejado</span><textarea id="pgLook" rows="4" placeholder="Ex.: noite de verão em Lisboa nos anos 80, filme vencido: sombras esverdeadas, luzes quentes que estouram, muito grão, cantos escuros."></textarea></label>
+      <label class="field"><span>Referências (opcional)</span><input type="text" id="pgRef" placeholder="Filmes, fotógrafos, época…"></label>
+      <label class="field adv-only"><span>Ponto de partida</span><select id="pgBase"><option value="new">Do zero</option><option value="current">Estilo atual (a IA ajusta o que está aberto)</option></select></label>
+      <label class="field adv-only"><span>Escopo</span><select id="pgScope"><option value="all">Estilo completo (cor, película, captura, overlays)</option><option value="color">Só cor e tons (sem película nem overlays)</option></select></label>
+      <label class="field adv-only"><span>LUT (.cube)</span><select id="pgLut"><option value="0">Não pedir LUT</option><option value="9">Pedir LUT 9³ (729 linhas)</option><option value="17">Pedir LUT 17³ (4.913 linhas)</option></select></label>
+      <textarea class="code adv-only" id="pgOut" readonly spellcheck="false" style="min-height:220px" aria-label="Pedido completo para a IA"></textarea>
+      <div class="actions"><button class="btn sm primary" id="pgCopy">2. Copiar pedido para a IA</button><button class="btn sm adv-only" id="pgDownload">Baixar .md</button><span class="stats" id="pgStats"></span></div>
+      <label class="field" style="grid-template-columns:1fr"><span>3. Cole aqui a resposta da IA (o bloco JSON e, se pediu, o bloco cube)</span><textarea class="code" id="pgIn" spellcheck="false" style="min-height:120px"></textarea></label>
+      <div class="actions"><button class="btn sm primary" id="pgApply">Aplicar resposta ao estilo</button></div>
+      <ul class="msgs" id="pgMsgs" role="status" aria-live="polite"></ul>
+    </div></details>
+
     <details class="panel" open><summary>Cor</summary><div class="body" id="pColor"></div></details>
     <details class="panel" open><summary>Curvas</summary><div class="body" id="pCurves"></div></details>
     <details class="panel"><summary>Tons divididos <span class="tag">split-tone</span></summary><div class="body" id="pSplit"></div></details>
@@ -149,32 +223,18 @@ kbd{font:11px var(--mono);border:1px solid var(--line);border-radius:4px;padding
 
     <details class="panel adv-only" open id="panelJson"><summary>JSON do estilo <span class="tag">avançado</span></summary><div class="body">
       <p class="hint">Edite livremente e aplique. Campos fora do schema são ignorados; valores fora da faixa são limitados e avisados.</p>
-      <textarea class="code" id="jsonText" spellcheck="false"></textarea>
+      <textarea class="code" id="jsonText" spellcheck="false" aria-label="JSON do estilo"></textarea>
       <div class="actions">
         <button class="btn sm" id="btnJsonApply">Aplicar JSON</button>
         <button class="btn sm" id="btnJsonRevert">Reverter ao estado atual</button>
         <button class="btn sm" id="btnJsonCopy">Copiar</button>
       </div>
-      <ul class="msgs" id="jsonMsgs"></ul>
-    </div></details>
-
-    <details class="panel adv-only" open id="panelPrompt"><summary>Gerador de prompt <span class="tag">avançado</span></summary><div class="body">
-      <p class="hint">Monta um prompt completo (formato, faixas, fórmulas do render, receitas e exemplo) para uma IA como ChatGPT, Claude ou Gemini criar o estilo. Depois cole a resposta dela abaixo e aplique.</p>
-      <label class="field"><span>Visual desejado</span><textarea id="pgLook" rows="4" placeholder="Ex.: noite de verão em Lisboa nos anos 80, filme tungstênio vencido: sombras esverdeadas, luzes quentes que estouram, muito grão, vinheta forte."></textarea></label>
-      <label class="field"><span>Referências</span><input type="text" id="pgRef" placeholder="Filmes, fotógrafos, emulsões, época… (opcional)"></label>
-      <label class="field"><span>Ponto de partida</span><select id="pgBase"><option value="new">Do zero</option><option value="current">Estilo atual (a IA ajusta o que está aberto)</option></select></label>
-      <label class="field"><span>Escopo</span><select id="pgScope"><option value="all">Estilo completo (cor, película, captura, overlays)</option><option value="color">Só cor e tons (sem película nem overlays)</option></select></label>
-      <label class="field"><span>LUT (.cube)</span><select id="pgLut"><option value="0">Não pedir LUT</option><option value="9">Pedir LUT 9³ (729 linhas)</option><option value="17">Pedir LUT 17³ (4.913 linhas)</option></select></label>
-      <textarea class="code" id="pgOut" readonly spellcheck="false" style="min-height:220px"></textarea>
-      <div class="actions"><button class="btn sm primary" id="pgCopy">Copiar prompt</button><button class="btn sm" id="pgDownload">Baixar .md</button><span class="stats" id="pgStats"></span></div>
-      <label class="field" style="grid-template-columns:1fr"><span>Resposta da IA (cole aqui o bloco JSON e, se pediu, o bloco cube)</span><textarea class="code" id="pgIn" spellcheck="false" style="min-height:140px"></textarea></label>
-      <div class="actions"><button class="btn sm primary" id="pgApply">Aplicar resposta ao estilo</button></div>
-      <ul class="msgs" id="pgMsgs"></ul>
+      <ul class="msgs" id="jsonMsgs" role="status" aria-live="polite"></ul>
     </div></details>
 
     <details class="panel adv-only" open id="panelCube"><summary>Editor de .cube <span class="tag">avançado</span></summary><div class="body">
       <div class="stats" id="cubeStats">Nenhuma LUT carregada.</div>
-      <textarea class="code" id="cubeText" spellcheck="false" placeholder="TITLE &quot;Meu estilo&quot;&#10;LUT_3D_SIZE 17&#10;DOMAIN_MIN 0.0 0.0 0.0&#10;DOMAIN_MAX 1.0 1.0 1.0&#10;0.000000 0.000000 0.000000&#10;…"></textarea>
+      <textarea class="code" id="cubeText" spellcheck="false" aria-label="Conteúdo do arquivo .cube" placeholder="TITLE &quot;Meu estilo&quot;&#10;LUT_3D_SIZE 17&#10;DOMAIN_MIN 0.0 0.0 0.0&#10;DOMAIN_MAX 1.0 1.0 1.0&#10;0.000000 0.000000 0.000000&#10;…"></textarea>
       <div class="actions">
         <button class="btn sm" id="cubeValidate">Validar</button>
         <button class="btn sm primary" id="cubeApply">Aplicar ao estilo</button>
@@ -188,13 +248,15 @@ kbd{font:11px var(--mono);border:1px solid var(--line);border-radius:4px;padding
         <button class="btn sm" id="cubeBake">Assar a cor atual</button>
         <button class="btn sm" id="cubeBakeReplace" title="Grava a cadeia de cor na LUT e zera os controles de cor">Assar e zerar cor</button>
       </div></div>
-      <div class="field"><span>Arquivo no pacote</span><input type="text" id="lutFile" spellcheck="false"></div>
+      <div class="field"><span>Arquivo no pacote</span><input type="text" id="lutFile" spellcheck="false" aria-label="Nome do arquivo da LUT no pacote"></div>
       <p class="hint">“Assar” grava Cor + Curvas + Tons + LUT atual (sem película nem quadro) numa LUT 3D. Use “Assar e zerar cor” para trocar a cadeia de controles por uma LUT sem aplicar a cor duas vezes. LUTs 65³ passam de 2 MB em texto e o app não as aceita dentro de um pacote.</p>
-      <ul class="msgs" id="cubeMsgs"></ul>
+      <ul class="msgs" id="cubeMsgs" role="status" aria-live="polite"></ul>
     </div></details>
 
+    <details class="panel" id="panelId"><summary>Nome e identificação <span class="tag">para exportar</span></summary><div class="body" id="pId"></div></details>
+
     <details class="panel" open><summary>Exportar</summary><div class="body">
-      <ul class="msgs" id="valMsgs"></ul>
+      <ul class="msgs" id="valMsgs" role="status" aria-live="polite"></ul>
       <div class="actions">
         <button class="btn primary" id="btnZip">Estilo completo (.estilo.zip)</button>
         <button class="btn" id="btnJson">Só o JSON (.estilo.json)</button>
@@ -205,8 +267,9 @@ kbd{font:11px var(--mono);border:1px solid var(--line);border-radius:4px;padding
     </div></details>
   </section>
 </main>
-<footer>Tudo roda no seu navegador: nenhuma imagem ou arquivo é enviado para fora. Schema: <code>https://mdantas.net/schema/estilo-1.0.json</code></footer>
+<footer><p class="hint credit-m"><span class="credit"></span></p>Tudo roda no seu navegador: nenhuma imagem ou arquivo é enviado para fora. Schema: <code>https://mdantas.net/schema/estilo-1.0.json</code></footer>
 
+<div id="toast" role="status" aria-live="polite"></div>
 <script>
 "use strict";
 /* ============================ utilidades ============================ */
@@ -231,6 +294,9 @@ function download(name, data, type) {
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
 const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+
+let toastT = 0;
+function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2800); }
 
 /* ============================ SHA-256, CRC32, ZIP ============================ */
 const SHA_K = [], SHA_H = [];
@@ -365,6 +431,8 @@ function toDoc(withLutHash = true) {
 }
 const docText = (withHash = true) => JSON.stringify(toDoc(withHash), null, 2) + "\n";
 
+function isPristine() { const d = toDoc(false); return !["color", "film", "capture", "overlays", "title_card"].some(k => k in d); }
+
 /* ---- leitura (tolerante; devolve avisos) ---- */
 function fromDoc(d) {
   const warns = []; const n = defaults();
@@ -373,7 +441,8 @@ function fromDoc(d) {
   else if (d.format !== "estilo") warns.push('format deveria ser "estilo".');
   const known = new Set(["$schema", "format", "version", "id", "name", "base", "category", "era", "description", "author", "license", "generator", "capture", "color", "film", "overlays", "title_card", "x-extensions"]);
   const unk = Object.keys(d).filter(k => !known.has(k)); if (unk.length) warns.push(`Campos desconhecidos ignorados: ${unk.join(", ")}.`);
-  const num = (v, lo, hi, def, label) => { if (v === undefined) return def; const x = Number(v); if (!isFinite(x)) { warns.push(`${label}: valor inválido, usei ${def}.`); return def; } if (x < lo || x > hi) warns.push(`${label}: ${x} fora de ${lo}..${hi}, limitado.`); return clamp(x, lo, hi); };
+  const LBL = { exposure: "Exposição", contrast: "Contraste", saturation: "Saturação", hue: "Matiz", temperature: "Temperatura", tint: "Tinta", highlights: "Realces", shadows: "Sombras", fade: "Fade", "grain.amount": "Grão", "grain.size": "Tamanho do grão", "grain.roughness": "Aspereza do grão", "halation.amount": "Brilho nas luzes", "halation.radius": "Alcance do brilho", vignette: "Vinheta", gate_weave: "Tremor do quadro", damage: "Riscos e poeira", flicker: "Oscilação de luz", "lut.mix": "Intensidade da LUT", era: "Ano", "capture.iso": "ISO", "split_tone.balance": "Equilíbrio dos tons divididos", "split_tone.amount": "Intensidade dos tons divididos" };
+  const num = (v, lo, hi, def, label) => { if (v === undefined) return def; const nm = LBL[label] || label, x = Number(v); if (!isFinite(x)) { warns.push(`${nm}: valor inválido, usei ${def}.`); return def; } if (x < lo || x > hi) warns.push(`${nm}: ${x} → limitado a ${clamp(x, lo, hi)} (faixa ${lo} a ${hi}).`); return clamp(x, lo, hi); };
   const hex = (v, def, label) => { if (v === undefined) return def; if (/^#[0-9a-f]{6}$/i.test(v)) return v.toUpperCase(); warns.push(`${label}: cor inválida.`); return def; };
   n.id = String(d.id ?? n.id); n.name = String(d.name ?? n.name); n.version = String(d.version ?? "1.0.0");
   n.base = d.base ? String(d.base) : ""; n.category = ["classico", "terror", "outro"].includes(d.category) ? d.category : "";
@@ -427,7 +496,9 @@ function validate() {
     if (!/^[A-Za-z0-9._-]{1,64}\.cube$/.test(LUT.file)) add("err", "Nome do arquivo da LUT: letras, números, ponto, _ e -, terminando em .cube (máx. 64).");
     if (LUT.text.length > 2 * 1024 * 1024) add("err", "A LUT passa de 2 MB; o app a recusaria. Use 33³ ou menos.");
   } else if (LUT.text.trim()) add("warn", "Há texto no editor de .cube que ainda não foi aplicado ao estilo.");
-  if (!m.some(x => x.l === "err")) add("ok", "Pronto para exportar: o estilo segue o schema Estilo 1.0.");
+  if (S.name.trim() === "Meu estilo") add("warn", "Dê um nome ao estilo (ainda é “Meu estilo”); pedimos o nome ao baixar.");
+  if (isPristine()) add("warn", "Este estilo ainda não tem nenhum ajuste. Use Descobrir, Criar com IA ou os controles antes de baixar.");
+  else if (!m.some(x => x.l === "err")) add("ok", "Estilo válido: pronto para baixar.");
   return m;
 }
 
@@ -659,7 +730,7 @@ function setSource(canvasLike, w, h, name) {
   const c = document.createElement("canvas"); c.width = cw; c.height = ch; const x = c.getContext("2d", { willReadFrequently: true });
   x.imageSmoothingQuality = "high"; x.drawImage(canvasLike, 0, 0, cw, ch);
   srcData = x.getImageData(0, 0, cw, ch); srcName = name;
-  origCanvas = c; gradedCanvas = null; thumbSrc = null; requestRender();
+  origCanvas = c; gradedCanvas = null; thumbSrc = null; histSrc = null; requestRender();
   if (typeof dsRefresh === "function") dsRefresh();
 }
 async function loadImageFile(file) {
@@ -671,7 +742,7 @@ function useScene(id) {
   im.onload = () => setSource(im, im.naturalWidth, im.naturalHeight, sc.label);
   im.src = sc.src;
   $("#scene").value = sc.id;
-  $("#credit").innerHTML = `Foto: <a href="${sc.url}" target="_blank" rel="noopener">${sc.title}</a>, ${sc.author}, CC0 (domínio público).`;
+  document.querySelectorAll(".credit").forEach(e => e.innerHTML = `Foto: <a href="${sc.url}" target="_blank" rel="noopener">${sc.title}</a>, ${sc.author}, CC0 (domínio público).`);
 }
 
 /* ============================ desenho ============================ */
@@ -683,7 +754,7 @@ function draw() {
   const t0 = performance.now();
   const out = renderImage(srcData, LUT.parsed);
   if (!gradedCanvas || gradedCanvas.width !== out.width || gradedCanvas.height !== out.height) { gradedCanvas = document.createElement("canvas"); gradedCanvas.width = out.width; gradedCanvas.height = out.height; }
-  gradedCanvas.getContext("2d").putImageData(out, 0, 0);
+  gradedCanvas.getContext("2d").putImageData(out, 0, 0); histFrom(out);
   lastMs = Math.round(performance.now() - t0);
   paint();
 }
@@ -702,6 +773,7 @@ function paint() {
     }
     drawOverlays(r.w, r.h);
   }
+  cv.setAttribute("aria-label", `Prévia de ${srcName} com o estilo ${S.name}`);
   $("#info").textContent = `${srcName} · ${r.w}×${r.h} · ${lastMs} ms${S.capture.aspect ? " · " + S.capture.aspect : ""}`;
 }
 function drawOverlays(w, h) {
@@ -725,7 +797,7 @@ function commit() {
   hist = hist.slice(0, hi + 1); hist.push(s); if (hist.length > 40) hist.shift(); hi = hist.length - 1; updateUndo();
 }
 function restore(s) {
-  restoring = true; const o = JSON.parse(s); S = o.S; LUT.file = o.lut.file; LUT.fileAuto = o.lut.fileAuto; setLutText(o.lut.text, true); restoring = false; refreshAll(true);
+  clearMsgs(); restoring = true; const o = JSON.parse(s); S = o.S; LUT.file = o.lut.file; LUT.fileAuto = o.lut.fileAuto; setLutText(o.lut.text, true); restoring = false; refreshAll(true);
 }
 function undo() { if (hi > 0) { hi--; restore(hist[hi]); updateUndo(); } }
 function redo() { if (hi < hist.length - 1) { hi++; restore(hist[hi]); updateUndo(); } }
@@ -734,18 +806,26 @@ function updateUndo() { $("#btnUndo").disabled = hi <= 0; $("#btnRedo").disabled
 /* ============================ controles ============================ */
 const syncers = [];
 function refreshAll(rebuild) { if (rebuild) { buildOverlays(); } syncers.forEach(f => f()); drawCurve(); refreshOutputs(); requestRender(); }
-let jsonDirty = false;
+let jsonDirty = false, valSig = "";
 function changed(final) { refreshOutputs(); requestRender(); if (final) commit(); }
-function slider(parent, path, label, min, max, step, def) {
-  const r = el("input", { type: "range", min, max, step }), n = el("input", { type: "number", min, max, step });
-  const lb = el("span", { class: "lb", title: "Duplo clique: valor padrão" }, label);
-  const set = v => { setPath(S, path, v); n.value = r.value = v; };
+function slider(parent, path, label, min, max, step, def, help) {
+  const r = el("input", { type: "range", min, max, step, "aria-label": label }), n = el("input", { type: "number", min, max, step, "aria-label": label + " (valor)" });
+  const lb = el("span", { class: "lb" }, label), rb = el("button", { class: "rst", type: "button", title: "Voltar ao padrão", "aria-label": "Voltar " + label + " ao padrão" }, "↺");
+  const upd = () => { const v = +getPath(S, path); rb.style.visibility = Math.abs(v - def) > 1e-9 ? "visible" : "hidden"; r.setAttribute("aria-valuetext", `${+v.toFixed(3)} (padrão ${def})`); };
+  const set = v => { setPath(S, path, v); n.value = r.value = v; upd(); };
   r.addEventListener("input", () => { set(+r.value); changed(false); });
   r.addEventListener("change", () => changed(true));
   n.addEventListener("change", () => { set(clamp(+n.value || 0, min, max)); changed(true); });
+  rb.addEventListener("click", () => { set(def); changed(true); });
   lb.addEventListener("dblclick", () => { set(def); changed(true); });
-  syncers.push(() => { const v = getPath(S, path); r.value = v; n.value = +(+v).toFixed(4); });
-  parent.append(el("div", { class: "row" }, lb, r, n));
+  syncers.push(() => { const v = getPath(S, path); r.value = v; n.value = +(+v).toFixed(4); upd(); });
+  const row = el("div", { class: "row" }, lb, r, n, rb);
+  if (help) {
+    const tip = el("div", { class: "tip", hidden: "" }, help), q = el("button", { class: "q", type: "button", "aria-label": "O que é " + label + "?", "aria-expanded": "false", title: "O que é isto?" }, "?");
+    q.addEventListener("click", () => { tip.hidden = !tip.hidden; q.setAttribute("aria-expanded", String(!tip.hidden)); });
+    lb.append(q); row.append(tip);
+  }
+  parent.append(row);
 }
 function textField(parent, path, label, opts = {}) {
   const i = el("input", { type: opts.type || "text", spellcheck: "false" }); if (opts.max) i.maxLength = opts.max; if (opts.ph) i.placeholder = opts.ph;
@@ -762,7 +842,7 @@ function selectField(parent, path, label, options, adv) {
   parent.append(el("label", { class: "field" + (adv ? " adv-only" : "") }, el("span", {}, label), s));
 }
 function colorField(parent, path, label) {
-  const i = el("input", { type: "color" }), t = el("input", { type: "text", maxlength: 7, style: "width:90px;font-family:var(--mono)" });
+  const i = el("input", { type: "color", "aria-label": label + " (seletor de cor)" }), t = el("input", { type: "text", maxlength: 7, "aria-label": label + " (código hexadecimal)", style: "width:90px;font-family:var(--mono)" });
   i.addEventListener("input", () => { setPath(S, path, i.value.toUpperCase()); t.value = i.value.toUpperCase(); changed(false); });
   i.addEventListener("change", () => changed(true));
   t.addEventListener("change", () => { if (/^#[0-9a-f]{6}$/i.test(t.value)) { setPath(S, path, t.value.toUpperCase()); i.value = t.value; changed(true); } else t.value = getPath(S, path); });
@@ -773,51 +853,52 @@ function colorField(parent, path, label) {
 /* ---- construção dos painéis ---- */
 (function build() {
   const id = $("#pId");
-  textField(id, "name", "Nome", { max: 40 }); textField(id, "id", "id (arquivo)", { max: 64, ph: "meu-estilo" });
+  textField(id, "name", "Nome do estilo", { max: 40 }); textField(id, "id", "Nome do arquivo (id)", { max: 64, ph: "meu-estilo" });
   selectField(id, "category", "Categoria", CATEGORIES); textField(id, "era", "Ano / era", { type: "number", num: true, min: 1888, maxv: 2100 });
   textField(id, "description", "Descrição", { max: 200 }); textField(id, "author", "Autor", { max: 60 }); textField(id, "license", "Licença", { max: 40, ph: "CC-BY-4.0" });
   textField(id, "base", "base (id de fábrica)", { max: 32, adv: true }); textField(id, "version", "version", { max: 12, adv: true });
 
   const co = $("#pColor");
-  [["exposure", "Exposição", -2, 2, .01, 0], ["contrast", "Contraste", 0, 3, .01, 1], ["saturation", "Saturação", 0, 4, .01, 1], ["hue", "Matiz", -180, 180, 1, 0],
-  ["temperature", "Temperatura", -100, 100, 1, 0], ["tint", "Tinta", -100, 100, 1, 0], ["highlights", "Realces", -1, 1, .01, 0], ["shadows", "Sombras", -1, 1, .01, 0], ["fade", "Fade", 0, 1, .01, 0]]
-    .forEach(([k, l, a, b, s, d]) => slider(co, "color." + k, l, a, b, s, d));
-  co.append(el("p", { class: "hint" }, "Duplo clique no nome de um controle volta ao padrão. Tinta positiva = magenta."));
+  [["exposure", "Exposição", -2, 2, .01, 0, "Clareia (+) ou escurece (−) a imagem inteira, em passos de luz (EV)."], ["contrast", "Contraste", 0, 3, .01, 1, "Abaixo de 1 a imagem fica suave; acima de 1, mais dura."], ["saturation", "Saturação", 0, 4, .01, 1, "0 = preto e branco; 1 = cores originais; 2 = o dobro de cor."], ["hue", "Matiz", -180, 180, 1, 0, "Gira todas as cores ao redor do círculo cromático. Giros pequenos (±10) já mudam bastante o clima."],
+  ["temperature", "Temperatura", -100, 100, 1, 0, "Positivo esquenta (alaranjado), negativo esfria (azulado)."], ["tint", "Tinta", -100, 100, 1, 0, "Desloca entre verde (negativo) e magenta (positivo). Útil para imitar luz fluorescente ou corrigir cor de pele."], ["highlights", "Realces", -1, 1, .01, 0, "Mexe só nas partes claras: negativo recupera detalhe, positivo estoura."], ["shadows", "Sombras", -1, 1, .01, 0, "Mexe só nas partes escuras: positivo abre, negativo fecha."], ["fade", "Fade (preto lavado)", 0, 1, .01, 0, "Levanta o preto e deixa a imagem “lavada”, como foto antiga. Ex.: 0,15 dá ar de álbum de família."]]
+    .forEach(([k, l, a, b, st, d, h]) => slider(co, "color." + k, l, a, b, st, d, h));
+  co.append(el("p", { class: "hint" }, "O botão ↺ volta o controle ao padrão. Toque no “?” para ver o que cada um faz."));
 
   const sp = $("#pSplit");
   const on = el("input", { type: "checkbox" }); on.addEventListener("change", () => { S.color.split.on = on.checked; changed(true); });
   syncers.push(() => { on.checked = S.color.split.on; });
   sp.append(el("label", { class: "switch" }, on, el("span", {}, "Ativar tons divididos")));
   colorField(sp, "color.split.shadows", "Sombras"); colorField(sp, "color.split.highlights", "Realces");
-  slider(sp, "color.split.balance", "Equilíbrio", -1, 1, .01, 0); slider(sp, "color.split.amount", "Intensidade", 0, 1, .01, 1);
+  slider(sp, "color.split.balance", "Equilíbrio", -1, 1, .01, 0, "Move a fronteira entre sombras e luzes: positivo faz a cor das sombras ocupar mais da imagem."); slider(sp, "color.split.amount", "Intensidade", 0, 1, .01, 1);
 
   const fi = $("#pFilm");
-  slider(fi, "film.grainAmount", "Grão", 0, 1, .01, 0); slider(fi, "film.grainSize", "Tamanho do grão", .1, 5, .05, 1); slider(fi, "film.grainRough", "Aspereza", 0, 1, .01, .5);
-  slider(fi, "film.halAmount", "Halation", 0, 1, .01, 0); slider(fi, "film.halRadius", "Raio do halation", 0, 1, .01, .5); colorField(fi, "film.halColor", "Cor do halation");
-  slider(fi, "film.vignette", "Vinheta", 0, 1, .01, 0); slider(fi, "film.gateWeave", "Gate weave", 0, 1, .01, 0); slider(fi, "film.damage", "Damage", 0, 1, .01, 0); slider(fi, "film.flicker", "Flicker", 0, 1, .01, 0);
-  fi.append(el("p", { class: "hint" }, "Gate weave, damage e flicker só aparecem no visor do app (movimento); aqui são apenas gravados no estilo."));
+  slider(fi, "film.grainAmount", "Grão", 0, 1, .01, 0, "Textura de filme. 0,15 a 0,35 é discreto; 0,5 ou mais é pesado."); slider(fi, "film.grainSize", "Tamanho do grão", .1, 5, .05, 1); slider(fi, "film.grainRough", "Aspereza do grão", 0, 1, .01, .5, "Guardada no estilo, mas a prévia e o app ainda não a usam.");
+  slider(fi, "film.halAmount", "Brilho nas luzes (halation)", 0, 1, .01, 0, "Brilho avermelhado que vaza ao redor das partes muito claras, típico de filme. Lâmpadas e janelas parecem “sangrar”."); slider(fi, "film.halRadius", "Alcance do brilho", 0, 1, .01, .5, "Quão longe o brilho se espalha."); colorField(fi, "film.halColor", "Cor do brilho");
+  slider(fi, "film.vignette", "Vinheta (cantos escuros)", 0, 1, .01, 0, "Escurece os cantos. 0,2 a 0,5 é típico."); slider(fi, "film.gateWeave", "Tremor do quadro (gate weave)", 0, 1, .01, 0, "Pequeno balanço da imagem, como o filme passando no projetor. Só aparece no visor do app."); slider(fi, "film.damage", "Riscos e poeira (damage)", 0, 1, .01, 0, "Riscos e sujeira de filme velho. Só aparece no visor do app."); slider(fi, "film.flicker", "Oscilação de luz (flicker)", 0, 1, .01, 0, "Variação de brilho entre quadros, como projetor antigo. Só aparece no visor do app.");
+  fi.append(el("p", { class: "hint" }, "Tremor, riscos e oscilação só se movem no visor do app; aqui são apenas gravados no estilo."));
 
   const ca = $("#pCap");
-  selectField(ca, "capture.aspect", "Proporção", ASPECTS.map(a => [a, a || "— (não definir)"]));
-  textField(ca, "capture.iso", "ISO", { type: "number", num: true, min: 6, maxv: 12800 }); textField(ca, "capture.shutter", "Obturador", { ph: "1/48", max: 8 });
+  selectField(ca, "capture.aspect", "Proporção do quadro", ASPECTS.map(a => [a, a === "full" ? "Quadro inteiro (full)" : a || "— (não definir)"]));
+  textField(ca, "capture.iso", "ISO (sensibilidade)", { type: "number", num: true, min: 6, maxv: 12800 }); textField(ca, "capture.shutter", "Obturador (velocidade)", { ph: "1/48", max: 8 });
+  ca.append(el("p", { class: "hint" }, "A proporção recorta o quadro. ISO e obturador são informativos: aparecem na interface do app."));
 
   const lu = $("#pLut");
   lu.append(el("div", { class: "stats", id: "lutStats" }, "Nenhuma LUT."), el("div", { class: "actions" },
     el("button", { class: "btn sm", onclick: () => pickCube() }, "Carregar .cube…"), el("button", { class: "btn sm", onclick: () => { setLutText("", false); changed(true); } }, "Remover")));
-  slider(lu, "color.lutMix", "Mistura", 0, 1, .01, 1); selectField(lu, "color.lutSpace", "Espaço", [["srgb", "sRGB (padrão)"], ["rec709", "Rec.709"], ["linear", "Linear"]]);
-  lu.append(el("p", { class: "hint" }, "O espaço diz em que curva a LUT espera a entrada. Para editar o texto da LUT ou assar a cor atual, ative o modo avançado."));
+  slider(lu, "color.lutMix", "Intensidade da LUT", 0, 1, .01, 1, "0 ignora a LUT; 1 aplica por completo."); selectField(lu, "color.lutSpace", "Espaço de cor da LUT", [["srgb", "sRGB (padrão)"], ["rec709", "Rec.709"], ["linear", "Linear"]]);
+  lu.append(el("p", { class: "hint" }, "LUT é uma tabela de cores (arquivo .cube) feita em outro programa. O espaço de cor diz em que curva ela espera a imagem; na dúvida, deixe sRGB. Para editar o texto da LUT ou gravar a cor atual nela, ative o modo avançado."));
 
   selectField($("#pOvl"), "titleCard", "Cartela", [["", "— (não definir)"], ["none", "Nenhuma"], ["didone-italic", "Didone itálico"], ["subtitle", "Legenda"]]);
   $("#pOvl").append(el("div", { id: "ovlList" }), el("button", { class: "btn sm", id: "ovlAdd", onclick: () => { if (S.overlays.length < 8) { S.overlays.push({ type: "text", text: "", anchor: "top-left", font: "mono" }); buildOverlays(); changed(true); } } }, "+ Overlay"));
 
   const cp = $("#pCurves");
-  cp.append(el("div", { class: "tabs", id: "curveTabs" }), el("div", { class: "curvewrap" }, el("canvas", { id: "curve", width: 520, height: 520 }),
+  cp.append(el("div", { class: "tabs", id: "curveTabs" }), el("div", { class: "curvewrap" }, el("canvas", { id: "curve", width: 520, height: 520, tabindex: "0", role: "application", "aria-label": "Editor de curva" }),
     el("div", {}, el("div", { class: "actions", style: "flex-direction:column;align-items:flex-start" },
       el("button", { class: "btn sm", onclick: () => curvePreset([[0, 0], [.25, .2], [.75, .8], [1, 1]]) }, "Contraste em S suave"),
       el("button", { class: "btn sm", onclick: () => curvePreset([[0, .08], [1, .94]]) }, "Preto levantado"),
       el("button", { class: "btn sm", onclick: () => curvePreset([[0, 0], [.5, .5], [1, 1]].map(p => p.slice()), true) }, "Zerar canal"),
       el("button", { class: "btn sm", onclick: () => { S.color.curves = { rgb: null, r: null, g: null, b: null }; drawCurve(); changed(true); } }, "Zerar todas")),
-      el("p", { class: "hint" }, "Clique no vazio: novo ponto. Arraste: move. Duplo clique no ponto: remove. Até 16 pontos por curva."))));
+      el("p", { class: "hint" }, "Clique no vazio: novo ponto. Arraste: move. Duplo clique no ponto ou o botão × da lista: remove. Pelo teclado: Tab até a curva, setas movem o ponto, [ e ] trocam de ponto, Delete remove, Enter adiciona. Até 16 pontos."), el("div", { id: "ptTable" }), el("button", { class: "btn sm", id: "ptAdd", onclick: () => curveMut(a => { if (a.length >= 16) return; a.sort((p, q) => p[0] - q[0]); let bi = 0, bg = 0; for (let k = 0; k < a.length - 1; k++) if (a[k + 1][0] - a[k][0] > bg) { bg = a[k + 1][0] - a[k][0]; bi = k; } const x = (a[bi][0] + a[bi + 1][0]) / 2, p = [round4(x), round4(monotone(a)(x))]; a.push(p); selObj = p; }, true) }, "+ Ponto"))));
   ["rgb", "r", "g", "b"].forEach(ch => $("#curveTabs").append(el("button", { "data-ch": ch, onclick: () => { curveCh = ch; drawCurve(); } }, ch === "rgb" ? "RGB" : ch.toUpperCase())));
 })();
 
@@ -832,11 +913,12 @@ function buildOverlays() {
       mk(ANCHORS.map(a => [a, a]), "anchor"), mk([["mono", "mono"], ["serif", "serif"], ["sans", "sans"]], "font"),
       el("button", { class: "btn sm", title: "Remover", onclick: () => { S.overlays.splice(i, 1); buildOverlays(); changed(true); } }, "×")));
   });
+  box.querySelectorAll(".ovl").forEach((row, i) => { const [a, b, c] = row.querySelectorAll("select"), t = row.querySelector("input"), x = row.querySelector("button"); a.setAttribute("aria-label", `Tipo do overlay ${i + 1}`); b.setAttribute("aria-label", `Posição do overlay ${i + 1}`); c.setAttribute("aria-label", `Fonte do overlay ${i + 1}`); t.setAttribute("aria-label", `Texto do overlay ${i + 1}`); x.setAttribute("aria-label", `Remover overlay ${i + 1}`); });
   $("#ovlAdd").disabled = S.overlays.length >= 8;
 }
 
 /* ---- curvas ---- */
-let curveCh = "rgb", drag = null;
+let curveCh = "rgb", drag = null, selObj = null, histSrc = null, kt = 0;
 const curveCv = $("#curve"), cctx = curveCv.getContext("2d"), CP = 18, chCol = { rgb: "#e8e1d6", r: "#ff6a5f", g: "#6fd16a", b: "#6aa8ff" };
 const cpts = () => S.color.curves[curveCh] || [[0, 0], [1, 1]];
 const toPx = p => [CP + p[0] * (520 - 2 * CP), 520 - CP - p[1] * (520 - 2 * CP)];
@@ -845,22 +927,42 @@ function storeCurve(pts) {
   const id = pts.length === 2 && pts.slice().sort((a, b) => a[0] - b[0]).every((p, i) => p[0] === i && p[1] === i);
   S.color.curves[curveCh] = id ? null : pts;
 }
+const curveArr = () => S.color.curves[curveCh] || (S.color.curves[curveCh] = cpts());
+function curveMut(fn, final) {
+  const a = curveArr(); fn(a); a.sort((p, q) => p[0] - q[0]); storeCurve(a); drawCurve(); changed(false);
+  if (final) commit(); else { clearTimeout(kt); kt = setTimeout(commit, 400); }
+}
+function ensureHist() { if (histSrc || !srcData) return; histSrc = new Float32Array(64); const d = srcData.data; for (let i = 0; i < d.length; i += 4) histSrc[Math.min(63, ((0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 4) | 0)]++; }
+function buildPtTable() {
+  const box = $("#ptTable"); box.innerHTML = ""; const pts = cpts().slice().sort((a, b) => a[0] - b[0]);
+  pts.forEach((p, i) => {
+    const same = z => Math.abs(z[0] - p[0]) < 1e-9 && Math.abs(z[1] - p[1]) < 1e-9, nm = curveCh === "rgb" ? "RGB" : curveCh.toUpperCase();
+    const mk = k => { const inp = el("input", { type: "number", min: 0, max: 1, step: .01, value: +p[k].toFixed(3), "aria-label": `Curva ${nm}, ponto ${i + 1}, ${k ? "saída (Y)" : "entrada (X)"}` }); inp.addEventListener("change", () => curveMut(a => { const q = a.find(same); if (q) { q[k] = round4(clamp(+inp.value || 0, 0, 1)); selObj = q; } }, true)); return inp; };
+    const rm = el("button", { class: "rst", type: "button", title: "Remover ponto", "aria-label": `Remover ponto ${i + 1} da curva ${nm}` }, "×"); rm.disabled = pts.length <= 2;
+    rm.addEventListener("click", () => curveMut(a => { const j = a.findIndex(same); if (j >= 0 && a.length > 2) a.splice(j, 1); selObj = null; }, true));
+    box.append(el("div", { class: "pt" + (p === selObj ? " sel" : "") }, el("span", {}, String(i + 1)), mk(0), mk(1), rm));
+  });
+  $("#ptAdd").disabled = pts.length >= 16;
+}
 function drawCurve() {
-  document.querySelectorAll("#curveTabs button").forEach(b => { b.classList.toggle("on", b.dataset.ch === curveCh); b.style.fontWeight = S.color.curves[b.dataset.ch] ? 700 : 400; });
+  document.querySelectorAll("#curveTabs button").forEach(b => { b.classList.toggle("on", b.dataset.ch === curveCh); b.setAttribute("aria-pressed", b.dataset.ch === curveCh); b.style.fontWeight = S.color.curves[b.dataset.ch] ? 700 : 400; });
   const c = cctx, cs = getComputedStyle(document.documentElement); c.clearRect(0, 0, 520, 520);
+  ensureHist(); if (histSrc) { const mx = Math.max(...histSrc) || 1, w = (520 - 2 * CP) / 64; c.fillStyle = "rgba(150,140,128,.25)"; for (let i = 0; i < 64; i++) { const h = Math.sqrt(histSrc[i] / mx) * (520 - 2 * CP) * .8; c.fillRect(CP + i * w, 520 - CP - h, w + 1, h); } }
   c.strokeStyle = cs.getPropertyValue("--line"); c.lineWidth = 1; c.beginPath();
   for (let i = 0; i <= 4; i++) { const p = CP + i * (520 - 2 * CP) / 4; c.moveTo(p, CP); c.lineTo(p, 520 - CP); c.moveTo(CP, p); c.lineTo(520 - CP, p); } c.stroke();
   c.strokeStyle = cs.getPropertyValue("--muted"); c.setLineDash([6, 6]); c.beginPath(); c.moveTo(...toPx([0, 0])); c.lineTo(...toPx([1, 1])); c.stroke(); c.setLineDash([]);
   const pts = cpts(), f = monotone(pts); c.strokeStyle = chCol[curveCh]; c.lineWidth = 3; c.beginPath();
   for (let i = 0; i <= 128; i++) { const x = i / 128, [px, py] = toPx([x, f(x)]); i ? c.lineTo(px, py) : c.moveTo(px, py); } c.stroke();
-  pts.forEach(p => { const [x, y] = toPx(p); c.fillStyle = chCol[curveCh]; c.strokeStyle = "#000"; c.lineWidth = 2; c.beginPath(); c.arc(x, y, 9, 0, 7); c.fill(); c.stroke(); });
+  pts.forEach(p => { const [x, y] = toPx(p), sel = p === selObj; c.fillStyle = chCol[curveCh]; c.strokeStyle = sel ? "#fff" : "#000"; c.lineWidth = sel ? 3 : 2; c.beginPath(); c.arc(x, y, sel ? 11 : 9, 0, 7); c.fill(); c.stroke(); });
+  buildPtTable();
+  curveCv.setAttribute("aria-label", `Editor da curva ${curveCh === "rgb" ? "RGB" : curveCh.toUpperCase()} com ${pts.length} pontos. Setas movem o ponto selecionado, colchetes trocam de ponto, Delete remove, Enter adiciona.`);
 }
 function curveEvt(e) { const r = curveCv.getBoundingClientRect(); return [(e.clientX - r.left) * 520 / r.width, (e.clientY - r.top) * 520 / r.height]; }
-function hit(pts, x, y) { return pts.findIndex(p => { const [px, py] = toPx(p); return Math.hypot(px - x, py - y) < 18; }); }
+function hit(pts, x, y) { return pts.findIndex(p => { const [px, py] = toPx(p); return Math.hypot(px - x, py - y) < 20; }); }
 curveCv.addEventListener("pointerdown", e => {
   const [x, y] = curveEvt(e); let pts = cpts().map(p => p.slice()); let i = hit(pts, x, y);
   if (i < 0) { if (pts.length >= 16) return; pts.push(fromPx(x, y)); pts.sort((a, b) => a[0] - b[0]); i = hit(pts, x, y); }
-  drag = pts[i]; storeCurve(pts); S.color.curves[curveCh] = pts; curveCv.setPointerCapture(e.pointerId); drawCurve(); changed(false);
+  drag = pts[i]; selObj = drag; storeCurve(pts); S.color.curves[curveCh] = pts; curveCv.setPointerCapture(e.pointerId); curveCv.focus({ preventScroll: true }); drawCurve(); changed(false);
 });
 curveCv.addEventListener("pointermove", e => {
   if (!drag) return; const [x, y] = curveEvt(e), p = fromPx(x, y), pts = S.color.curves[curveCh]; drag[0] = p[0]; drag[1] = p[1]; pts.sort((a, b) => a[0] - b[0]); drawCurve(); changed(false);
@@ -868,9 +970,17 @@ curveCv.addEventListener("pointermove", e => {
 curveCv.addEventListener("pointerup", () => { if (!drag) return; drag = null; const pts = S.color.curves[curveCh]; if (pts) storeCurve(pts.map(p => p.map(round4))); drawCurve(); changed(true); });
 curveCv.addEventListener("dblclick", e => {
   const [x, y] = curveEvt(e), pts = cpts().map(p => p.slice()), i = hit(pts, x, y);
-  if (i >= 0 && pts.length > 2) { pts.splice(i, 1); storeCurve(pts); drawCurve(); changed(true); }
+  if (i >= 0 && pts.length > 2) { pts.splice(i, 1); storeCurve(pts); selObj = null; drawCurve(); changed(true); }
 });
-function curvePreset(pts, clear) { if (clear) S.color.curves[curveCh] = null; else storeCurve(pts.map(p => p.slice())); drawCurve(); changed(true); }
+curveCv.addEventListener("keydown", e => {
+  const k = e.key, st = e.shiftKey ? .05 : .01;
+  if (k === "[" || k === "]") { const a = cpts().slice().sort((p, q) => p[0] - q[0]); let i = a.indexOf(selObj); i = i < 0 ? 0 : clamp(i + (k === "]" ? 1 : -1), 0, a.length - 1); selObj = a[i]; drawCurve(); e.preventDefault(); return; }
+  if (k === "Enter") { $("#ptAdd").click(); e.preventDefault(); return; }
+  if (k === "Delete" || k === "Backspace") { e.preventDefault(); curveMut(a => { if (a.length > 2) { const i = a.indexOf(selObj); if (i >= 0) a.splice(i, 1); selObj = null; } }); return; }
+  const mv = { ArrowLeft: [-st, 0], ArrowRight: [st, 0], ArrowUp: [0, st], ArrowDown: [0, -st] }[k];
+  if (mv) { e.preventDefault(); curveMut(a => { if (!selObj || !a.includes(selObj)) { const t = a.slice().sort((p, q) => p[0] - q[0]); selObj = t[Math.min(1, t.length - 1)]; } selObj[0] = round4(clamp(selObj[0] + mv[0], 0, 1)); selObj[1] = round4(clamp(selObj[1] + mv[1], 0, 1)); }); }
+});
+function curvePreset(pts, clear) { if (clear) S.color.curves[curveCh] = null; else storeCurve(pts.map(p => p.slice())); selObj = null; drawCurve(); changed(true); }
 
 /* ============================ LUT: estado e editor ============================ */
 const CUBE_EDIT_MAX = 1.5e6;
@@ -1040,7 +1150,7 @@ function updatePrompt() {
   $("#pgStats").textContent = `${t.length.toLocaleString("pt-BR")} caracteres · ~${Math.round(t.length / 3.6).toLocaleString("pt-BR")} tokens`;
 }
 ["pgLook", "pgRef", "pgBase", "pgScope", "pgLut"].forEach(id => $("#" + id).addEventListener("input", updatePrompt));
-$("#pgCopy").onclick = async () => { updatePrompt(); try { await navigator.clipboard.writeText($("#pgOut").value); $("#pgCopy").textContent = "Copiado ✓"; } catch { $("#pgOut").select(); document.execCommand("copy"); $("#pgCopy").textContent = "Copiado ✓"; } setTimeout(() => $("#pgCopy").textContent = "Copiar prompt", 1800); };
+$("#pgCopy").onclick = async () => { updatePrompt(); const t = $("#pgOut").value; try { await navigator.clipboard.writeText(t); toast("Pedido copiado. Cole na sua IA e depois traga a resposta aqui."); } catch { const x = document.createElement("textarea"); x.value = t; document.body.append(x); x.select(); document.execCommand("copy"); x.remove(); toast("Pedido copiado."); } };
 $("#pgDownload").onclick = () => { updatePrompt(); download("prompt-" + filesBase() + ".md", $("#pgOut").value, "text/markdown"); };
 $("#pgApply").onclick = () => {
   const box = $("#pgMsgs"); box.innerHTML = ""; const msg = (l, t) => box.append(el("li", { class: l }, t));
@@ -1156,14 +1266,15 @@ function applyLocks(v) {
   if (locksOn.has("quadro")) { v.capture = clone(S.capture); v.overlays = clone(S.overlays); v.titleCard = S.titleCard; }
   return v;
 }
+const PHRASE = { "color.exposure": ["mais escuro", "mais claro"], "color.contrast": ["contraste mais suave", "mais contraste"], "color.saturation": ["cores mais discretas", "cores mais vivas"], "color.hue": ["cores giradas", "cores giradas"], "color.temperature": ["mais frio", "mais quente"], "color.tint": ["tom esverdeado", "tom magenta"], "color.highlights": ["luzes mais suaves", "luzes mais fortes"], "color.shadows": ["sombras mais fechadas", "sombras mais abertas"], "color.fade": ["preto menos lavado", "preto mais lavado"], "film.grainAmount": ["menos grão", "mais grão"], "film.grainSize": ["grão menor", "grão maior"], "film.halAmount": ["menos brilho nas luzes", "mais brilho nas luzes"], "film.vignette": ["cantos mais claros", "cantos mais escuros"] };
 function diffCaption(v) {
   const d = [];
-  for (const [p, lo, hi, n] of SOFT) { const x = (getPath(v, p) - getPath(S, p)) / (hi - lo); if (Math.abs(x) > .02) d.push([Math.abs(x), (x > 0 ? "↑ " : "↓ ") + n]); }
-  if (v.color.split.on !== S.color.split.on) d.push([.3, v.color.split.on ? "+ tons divididos" : "− tons divididos"]);
-  else if (v.color.split.on && v.color.split.shadows !== S.color.split.shadows) d.push([.12, "tons divididos"]);
-  if (JSON.stringify(v.color.curves) !== JSON.stringify(S.color.curves)) d.push([.25, "curva"]);
-  if (v.capture.aspect !== S.capture.aspect) d.push([.2, "enquadramento " + (v.capture.aspect || "livre")]);
-  d.sort((a, b) => b[0] - a[0]); return d.slice(0, 2).map(x => x[1]).join(" · ") || "quase igual";
+  for (const [p, lo, hi] of SOFT) { const x = (getPath(v, p) - getPath(S, p)) / (hi - lo); if (Math.abs(x) > .02 && PHRASE[p]) d.push([Math.abs(x), PHRASE[p][x > 0 ? 1 : 0]]); }
+  if (v.color.split.on !== S.color.split.on) d.push([.3, v.color.split.on ? "cores nas sombras e nas luzes" : "sem cores nas sombras e luzes"]);
+  else if (v.color.split.on && v.color.split.shadows !== S.color.split.shadows) d.push([.12, "outras cores nas sombras e luzes"]);
+  if (JSON.stringify(v.color.curves) !== JSON.stringify(S.color.curves)) d.push([.25, "curva de tons diferente"]);
+  if (v.capture.aspect !== S.capture.aspect) d.push([.2, "quadro " + (v.capture.aspect || "livre")]);
+  d.sort((a, b) => b[0] - a[0]); const t = d.slice(0, 2).map(x => x[1]).join(" · ") || "quase igual ao atual"; return t[0].toUpperCase() + t.slice(1);
 }
 function ensureThumb() {
   if (thumbSrc || !origCanvas) return !!thumbSrc;
@@ -1177,7 +1288,7 @@ function paintTile(cvs, v) {
 }
 function genTiles(mode) {
   dsMode = mode; const b = boldness(), n = 9;
-  if (mode === "explore") tiles = pickArchs(n).map(a => { const v = applyLocks(buildArch(a, b)); v._cap = `<b>${v.name}</b>${a.tags.slice(0, 3).join(", ")}`; return v; });
+  if (mode === "explore") tiles = pickArchs(n).map(a => { const v = applyLocks(buildArch(a, b)); v._cap = `<b>${v.name}</b>${a.tags.slice(0, 3).map(t => t === "pb" ? "P&B" : t[0].toUpperCase() + t.slice(1)).join(" · ")}`; return v; });
   else tiles = Array.from({ length: n }, () => { const v = mutate(S, .2 + .8 * b); v._cap = diffCaption(v); return v; });
   $("#dsMode").textContent = mode === "explore" ? "Looks novos. Clique para adotar." : "Variações perto do look atual. Clique para seguir por esse caminho.";
   renderTiles();
@@ -1210,27 +1321,32 @@ $("#dsBold").addEventListener("change", () => genTiles(dsMode));
 /* favoritos (guardados só neste navegador) */
 function favs() { try { return JSON.parse(store.get("estilo-studio-favs") || "[]"); } catch { return []; } }
 function renderFavs() {
-  const box = $("#dsFavs"); box.innerHTML = "";
-  favs().forEach((f, i) => {
-    const w = el("div", { class: "fav" }, el("img", { src: f.t, alt: f.s.name, title: f.s.name }), el("button", { title: "Remover", "aria-label": "Remover favorito" }, "×"));
-    w.querySelector("img").onclick = () => { S = clone(f.s); refreshAll(true); commit(); genTiles("vary"); };
-    w.querySelector("button").onclick = () => { const a = favs(); a.splice(i, 1); store.set("estilo-studio-favs", JSON.stringify(a)); renderFavs(); };
+  const box = $("#dsFavs"); box.innerHTML = ""; const a = favs();
+  box.append(el("p", { class: "hint", style: "width:100%;margin:2px 0" }, a.length ? `Meus looks (${a.length}): toque em um para voltar a ele.` : "Meus looks: nenhum guardado ainda. Use ★ para guardar os que gostar (ficam só neste navegador)."));
+  a.forEach((f, i) => {
+    const b = el("button", { class: "favbtn", type: "button", "aria-label": "Voltar ao look " + f.s.name, title: f.s.name }, el("img", { src: f.t, alt: "", style: "width:100%;border-radius:6px;display:block;border:1px solid var(--line)" }));
+    const x = el("button", { title: "Remover", "aria-label": "Remover look " + f.s.name, type: "button" }, "×"), w = el("div", { class: "fav" }, b, x);
+    b.onclick = () => { S = clone(f.s); refreshAll(true); commit(); genTiles("vary"); toast(`Look “${S.name}” restaurado.`); };
+    x.onclick = () => { const l = favs(); l.splice(i, 1); store.set("estilo-studio-favs", JSON.stringify(l)); renderFavs(); toast("Look removido."); };
     box.append(w);
   });
 }
 $("#dsFav").onclick = () => {
+  if (isPristine()) { toast("Faça alguma alteração antes de guardar um look."); return; }
   const c = document.createElement("canvas"); c.width = 160; c.height = Math.round(160 * cv.height / cv.width); c.getContext("2d").drawImage(cv, 0, 0, c.width, c.height);
   const a = favs(); a.unshift({ s: clone(S), t: c.toDataURL("image/jpeg", .7) }); store.set("estilo-studio-favs", JSON.stringify(a.slice(0, 14))); renderFavs();
+  toast(`Look “${S.name}” guardado (${Math.min(a.length, 14)}). Veja em “Meus looks”.`);
 };
+$("#dsAI").onclick = () => { const p = $("#panelPrompt"); p.open = true; p.scrollIntoView({ behavior: "smooth", block: "start" }); setTimeout(() => $("#pgLook").focus({ preventScroll: true }), 350); };
 
 /* ============================ saídas ============================ */
 function refreshOutputs() {
   if (!jsonDirty && document.activeElement !== jsonTa) jsonTa.value = docText();
   syncCubeEditor();
-  const m = validate(), box = $("#valMsgs"); box.innerHTML = ""; m.forEach(x => box.append(el("li", { class: x.l }, x.t)));
+  const m = validate(), box = $("#valMsgs"), sig = JSON.stringify(m); if (sig !== valSig) { valSig = sig; box.innerHTML = ""; m.forEach(x => box.append(el("li", { class: x.l }, x.t))); }
   const bad = m.some(x => x.l === "err"); $("#btnZip").disabled = $("#btnZipTop").disabled = $("#btnJson").disabled = bad;
   $("#btnCube").disabled = !LUT.text.trim();
-  if (document.body.classList.contains("adv") && document.activeElement?.closest?.("#panelPrompt") == null) updatePrompt();
+  if (document.activeElement?.closest?.("#panelPrompt") == null) updatePrompt();
 }
 function filesBase() { return S.id || "estilo"; }
 function buildZip() {
@@ -1239,13 +1355,23 @@ function buildZip() {
   return makeZip(files);
 }
 const exportZip = () => download(filesBase() + ".estilo.zip", buildZip());
-$("#btnZip").onclick = $("#btnZipTop").onclick = exportZip;
-$("#btnJson").onclick = () => download(filesBase() + ".estilo.json", docText(true), "application/json");
+function guardExport() {
+  if (S.name.trim() === "Meu estilo") {
+    const n = prompt("Dê um nome ao estilo antes de baixar:", "");
+    if (n === null) return false;
+    if (n.trim()) { S.name = n.trim().slice(0, 40); if (S.id === "meu-estilo") { S.id = slug(S.name) || "estilo"; if (LUT.fileAuto) LUT.file = S.id + ".cube"; } refreshAll(false); commit(); }
+  }
+  if (isPristine() && !confirm("Este estilo ainda não tem nenhum ajuste (só o nome). Baixar mesmo assim?")) return false;
+  return true;
+}
+$("#btnZip").onclick = $("#btnZipTop").onclick = () => { if (guardExport()) exportZip(); };
+$("#btnJson").onclick = () => { if (guardExport()) download(filesBase() + ".estilo.json", docText(true), "application/json"); };
 $("#btnCube").onclick = () => LUT.text && download(LUT.file, LUT.text, "text/plain");
 $("#btnPng").onclick = () => cv.toBlob(b => download(filesBase() + "-previa.png", b));
 
 /* ============================ importar ============================ */
 async function importFile(file) {
+  clearMsgs();
   const name = file.name.toLowerCase();
   try {
     if (name.endsWith(".cube") || name.endsWith(".lut")) {
@@ -1267,7 +1393,7 @@ async function importFile(file) {
     if (warns.length) alert("Estilo aberto com avisos:\n\n• " + warns.join("\n• "));
   } catch (e) { alert("Não consegui abrir: " + e.message); }
 }
-$("#btnImport").onclick = () => $("#fileStyle").click();
+$("#btnImport2").onclick = $("#btnImport").onclick = () => { closeMenu(); $("#fileStyle").click(); };
 $("#fileStyle").onchange = e => { if (e.target.files[0]) importFile(e.target.files[0]); e.target.value = ""; };
 
 /* ============================ eventos gerais ============================ */
@@ -1277,19 +1403,42 @@ SCENES.forEach(x => $("#scene").append(el("option", { value: x.id }, x.label)));
 $("#scene").onchange = e => useScene(e.target.value);
 const hold = on => { holdOrig = on; paint(); };
 const bh = $("#btnHold"); bh.addEventListener("pointerdown", () => hold(true)); ["pointerup", "pointerleave", "pointercancel"].forEach(t => bh.addEventListener(t, () => holdOrig && hold(false)));
-$("#btnSplit").onclick = e => { splitOn = !splitOn; e.currentTarget.classList.toggle("on", splitOn); $("#splitPos").classList.toggle("show", splitOn); paint(); };
+bh.addEventListener("keydown", e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); hold(true); } }); ["keyup", "blur"].forEach(t => bh.addEventListener(t, () => holdOrig && hold(false)));
+$("#btnSplit").onclick = e => { splitOn = !splitOn; e.currentTarget.classList.toggle("on", splitOn); e.currentTarget.setAttribute("aria-pressed", splitOn); $("#splitPos").classList.toggle("show", splitOn); paint(); };
 $("#splitPos").addEventListener("input", paint);
 const view = $("#view");
 ["dragenter", "dragover"].forEach(t => view.addEventListener(t, e => { e.preventDefault(); view.classList.add("drag"); }));
 ["dragleave", "drop"].forEach(t => view.addEventListener(t, e => { e.preventDefault(); view.classList.remove("drag"); }));
 view.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (!f) return; if (f.type.startsWith("image/")) loadImageFile(f); else importFile(f); });
 $("#btnUndo").onclick = undo; $("#btnRedo").onclick = redo;
-$("#btnReset").onclick = () => { if (confirm("Descartar o estilo atual e começar um novo?")) { S = defaults(); LUT.fileAuto = true; LUT.file = "meu-estilo.cube"; jsonDirty = false; setLutText("", true); refreshAll(true); commit(); } };
+$("#btnReset2").onclick = $("#btnReset").onclick = () => { closeMenu(); if (confirm("Descartar o estilo atual e começar um novo?")) { S = defaults(); clearMsgs(); abOther = null; updateAB(); LUT.fileAuto = true; LUT.file = "meu-estilo.cube"; jsonDirty = false; setLutText("", true); refreshAll(true); commit(); } };
 document.addEventListener("keydown", e => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z" && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) { e.preventDefault(); e.shiftKey ? redo() : undo(); }
 });
-const adv = $("#advToggle"); adv.onchange = () => { document.body.classList.toggle("adv", adv.checked); store.set("estilo-studio-adv", adv.checked ? "1" : "0"); refreshOutputs(); };
-adv.checked = store.get("estilo-studio-adv") === "1"; document.body.classList.toggle("adv", adv.checked);
+/* ---- histograma da prévia, A/B, modo avançado, tamanhos, avisos ---- */
+let histOn = false; const histOut = new Uint32Array(192);
+function histFrom(d) { histOut.fill(0); const p = d.data; for (let i = 0; i < p.length; i += 8) { histOut[p[i] >> 2]++; histOut[64 + (p[i + 1] >> 2)]++; histOut[128 + (p[i + 2] >> 2)]++; } if (histOn) drawHist(); }
+function drawHist() {
+  const c = $("#hist"), x = c.getContext("2d"); x.clearRect(0, 0, c.width, c.height); let mx = 1; for (let i = 0; i < 192; i++) mx = Math.max(mx, histOut[i]);
+  x.globalCompositeOperation = "lighter"; ["#ff4a40", "#40e060", "#4a8cff"].forEach((col, ch) => { x.fillStyle = col; for (let i = 0; i < 64; i++) { const h = Math.sqrt(histOut[ch * 64 + i] / mx) * c.height * .95; x.fillRect(i * c.width / 64, c.height - h, c.width / 64 + .5, h); } }); x.globalCompositeOperation = "source-over";
+}
+$("#btnHist").onclick = e => { histOn = !histOn; $("#hist").classList.toggle("show", histOn); e.currentTarget.classList.toggle("on", histOn); e.currentTarget.setAttribute("aria-pressed", histOn); if (histOn) drawHist(); };
+let abOther = null, abCur = "A";
+function updateAB() { const b = $("#btnAB"); b.textContent = abOther ? `A/B · editando ${abCur}` : "A/B"; b.classList.toggle("on", !!abOther); b.title = abOther ? "Alterna entre as duas versões. Shift+clique descarta a versão guardada." : "Guarda a versão atual (A) e deixa você editar uma segunda (B) para alternar entre elas."; }
+$("#btnAB").onclick = e => {
+  if (e.shiftKey && abOther) { abOther = null; updateAB(); toast("Comparação A/B descartada."); return; }
+  if (!abOther) { abOther = snap(); abCur = "B"; updateAB(); toast("Versão A guardada. Edite à vontade e toque em A/B para alternar."); return; }
+  const cur = snap(); restore(abOther); abOther = cur; abCur = abCur === "A" ? "B" : "A"; commit(); updateAB();
+};
+function clearMsgs() { ["#jsonMsgs", "#pgMsgs", "#cubeMsgs"].forEach(q => { const e = $(q); if (e) e.innerHTML = ""; }); }
+function closeMenu() { const m = $(".menu"); if (m) m.open = false; }
+function setAdv(on, persist = true) { document.body.classList.toggle("adv", on); $("#advToggle").checked = $("#advToggle2").checked = on; if (persist) store.set("estilo-studio-adv", on ? "1" : "0"); refreshOutputs(); }
+$("#advToggle").onchange = e => setAdv(e.target.checked); $("#advToggle2").onchange = e => setAdv(e.target.checked);
+setAdv(store.get("estilo-studio-adv") === "1", false);
+const topEl = $("#top"), stageEl = $(".stage"), syncSizes = () => { const r = document.documentElement.style; r.setProperty("--hh", topEl.offsetHeight + "px"); r.setProperty("--sh", (matchMedia("(max-width:900px)").matches ? stageEl.offsetHeight : 0) + "px"); };
+new ResizeObserver(syncSizes).observe(topEl); new ResizeObserver(syncSizes).observe(stageEl); syncSizes();
+const alertMo = new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 && n.classList.contains("err")) n.setAttribute("role", "alert"); })));
+["#valMsgs", "#jsonMsgs", "#cubeMsgs", "#pgMsgs"].forEach(q => alertMo.observe($(q), { childList: true }));
 
 /* ============================ início ============================ */
 useScene("mountain"); buildOverlays(); refreshAll(true); commit();
