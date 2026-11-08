@@ -1,0 +1,29 @@
+{
+  "$schema": "https://mdantas.net/schema/estilo-1.0.json",
+  "format": "estilo",
+  "version": "1.0.0",
+  "id": "nouvelle62",
+  "name": "Nouvelle 62",
+  "category": "classico",
+  "era": 1962,
+  "description": "P&B leve e granulado, luz natural de rua, câmera na mão.",
+  "license": "CC-BY-4.0",
+  "generator": "Penumbra 1.0",
+  "capture": {
+    "aspect": "1.66:1",
+    "iso": 800,
+    "shutter": "1/60"
+  },
+  "color": {
+    "exposure": 0.12,
+    "contrast": 1.1,
+    "saturation": 0
+  },
+  "film": {
+    "grain": {
+      "amount": 0.45,
+      "size": 1.6
+    },
+    "gate_weave": 0.15
+  }
+}

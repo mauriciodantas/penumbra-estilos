@@ -1,0 +1,35 @@
+{
+  "$schema": "https://mdantas.net/schema/estilo-1.0.json",
+  "format": "estilo",
+  "version": "1.0.0",
+  "id": "gotico58",
+  "name": "Gótico 58",
+  "category": "terror",
+  "era": 1958,
+  "description": "Vermelho denso sobre penumbra de castelo, pele pálida, céu de tempestade.",
+  "license": "CC-BY-4.0",
+  "generator": "Penumbra 1.0",
+  "capture": {
+    "aspect": "1.66:1",
+    "iso": 100,
+    "shutter": "1/48"
+  },
+  "color": {
+    "exposure": -0.2,
+    "contrast": 1.3,
+    "saturation": 1.5,
+    "hue": -18,
+    "temperature": 12
+  },
+  "film": {
+    "grain": {
+      "amount": 0.25,
+      "size": 1.2
+    },
+    "halation": {
+      "amount": 0.3,
+      "color": "#C81E1E"
+    },
+    "vignette": 0.45
+  }
+}

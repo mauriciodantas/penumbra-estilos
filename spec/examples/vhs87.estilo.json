@@ -1,0 +1,42 @@
+{
+  "$schema": "https://mdantas.net/schema/estilo-1.0.json",
+  "format": "estilo",
+  "version": "1.0.0",
+  "id": "vhs87",
+  "name": "VHS 87",
+  "category": "terror",
+  "era": 1987,
+  "description": "Fita gasta, cor que escorre, data no canto. A locadora às duas da manhã.",
+  "license": "CC-BY-4.0",
+  "generator": "Penumbra 1.0",
+  "capture": {
+    "aspect": "1.33:1",
+    "iso": 1600,
+    "shutter": "1/60"
+  },
+  "color": {
+    "exposure": 0.05,
+    "contrast": 0.92,
+    "saturation": 1.35,
+    "hue": 10
+  },
+  "film": {
+    "grain": {
+      "amount": 0.4,
+      "size": 0.8
+    }
+  },
+  "overlays": [
+    {
+      "type": "text",
+      "text": "PLAY",
+      "anchor": "top-left",
+      "font": "mono"
+    },
+    {
+      "type": "timestamp",
+      "anchor": "bottom-right",
+      "font": "mono"
+    }
+  ]
+}

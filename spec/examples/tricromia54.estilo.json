@@ -1,0 +1,33 @@
+{
+  "$schema": "https://mdantas.net/schema/estilo-1.0.json",
+  "format": "estilo",
+  "version": "1.0.0",
+  "id": "tricromia54",
+  "name": "Tricromia 54",
+  "category": "classico",
+  "era": 1954,
+  "description": "Cor saturada de três faixas: vermelho de batom, céu de cartão-postal.",
+  "license": "CC-BY-4.0",
+  "generator": "Penumbra 1.0",
+  "capture": {
+    "aspect": "1.37:1",
+    "iso": 50,
+    "shutter": "1/48"
+  },
+  "color": {
+    "contrast": 1.15,
+    "saturation": 1.9,
+    "hue": -8
+  },
+  "film": {
+    "grain": {
+      "amount": 0.12,
+      "size": 1.0
+    },
+    "halation": {
+      "amount": 0.15,
+      "color": "#FF5A3C"
+    },
+    "vignette": 0.15
+  }
+}

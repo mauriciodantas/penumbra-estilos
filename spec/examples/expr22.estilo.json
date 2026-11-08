@@ -1,0 +1,35 @@
+{
+  "$schema": "https://mdantas.net/schema/estilo-1.0.json",
+  "format": "estilo",
+  "version": "1.0.0",
+  "id": "expr22",
+  "name": "Expressionista 22",
+  "category": "classico",
+  "era": 1922,
+  "description": "Sépia profundo, vinheta em íris e contraste de cenário pintado.",
+  "license": "CC-BY-4.0",
+  "generator": "Penumbra 1.0",
+  "capture": {
+    "aspect": "1.33:1",
+    "iso": 25,
+    "shutter": "1/24"
+  },
+  "color": {
+    "exposure": -0.2,
+    "contrast": 1.45,
+    "saturation": 0,
+    "split_tone": {
+      "shadows": "#2A1E14",
+      "highlights": "#E8C99A",
+      "balance": 0.1
+    }
+  },
+  "film": {
+    "grain": {
+      "amount": 0.5,
+      "size": 2.0
+    },
+    "vignette": 0.8,
+    "gate_weave": 0.35
+  }
+}

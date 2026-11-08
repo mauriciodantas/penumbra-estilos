@@ -1,0 +1,87 @@
+{
+  "$schema": "https://mdantas.net/schema/estilo-1.0.json",
+  "format": "estilo",
+  "version": "1.0.0",
+  "id": "giallo-do-corredor",
+  "name": "Giallo do Corredor",
+  "category": "terror",
+  "era": 1971,
+  "description": "Interpretação própria sobre Giallo 71.",
+  "license": "CC-BY-4.0",
+  "generator": "Penumbra 1.0",
+  "capture": {
+    "aspect": "2.39:1",
+    "iso": 200,
+    "shutter": "1/30"
+  },
+  "color": {
+    "exposure": 0.0,
+    "contrast": 1.25,
+    "saturation": 2.3,
+    "hue": -22,
+    "temperature": -8,
+    "curves": {
+      "rgb": [
+        [
+          0,
+          0.04
+        ],
+        [
+          0.5,
+          0.52
+        ],
+        [
+          1,
+          0.96
+        ]
+      ],
+      "r": [
+        [
+          0,
+          0
+        ],
+        [
+          0.5,
+          0.56
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    "split_tone": {
+      "shadows": "#1F4A46",
+      "highlights": "#FFB35C",
+      "balance": 0.2
+    }
+  },
+  "film": {
+    "grain": {
+      "amount": 0.35,
+      "size": 1.4
+    },
+    "halation": {
+      "amount": 0.4,
+      "color": "#FF3B1F"
+    },
+    "vignette": 0.3,
+    "gate_weave": 0.1
+  },
+  "overlays": [
+    {
+      "type": "text",
+      "text": "PLAY",
+      "anchor": "top-left",
+      "font": "mono"
+    }
+  ],
+  "base": "giallo71",
+  "author": {
+    "name": "[AUTOR]"
+  },
+  "title_card": {
+    "style": "didone-italic"
+  },
+  "x-extensions": {}
+}

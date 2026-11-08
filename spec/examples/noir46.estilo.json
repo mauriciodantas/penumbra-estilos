@@ -1,0 +1,29 @@
+{
+  "$schema": "https://mdantas.net/schema/estilo-1.0.json",
+  "format": "estilo",
+  "version": "1.0.0",
+  "id": "noir46",
+  "name": "Noir 46",
+  "category": "classico",
+  "era": 1946,
+  "description": "Preto e branco duro, sombras recortadas de persiana e pretos que engolem o fundo.",
+  "license": "CC-BY-4.0",
+  "generator": "Penumbra 1.0",
+  "capture": {
+    "aspect": "1.37:1",
+    "iso": 400,
+    "shutter": "1/48"
+  },
+  "color": {
+    "exposure": -0.15,
+    "contrast": 1.65,
+    "saturation": 0
+  },
+  "film": {
+    "grain": {
+      "amount": 0.3,
+      "size": 1.2
+    },
+    "vignette": 0.35
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://mdantas.net/schema/estilo-1.0.json",
+  "format": "estilo",
+  "version": "1.0.0",
+  "id": "achado99",
+  "name": "Achado 99",
+  "category": "terror",
+  "era": 1999,
+  "description": "Visão noturna esverdeada e grão de câmera encontrada no meio da mata.",
+  "license": "CC-BY-4.0",
+  "generator": "Penumbra 1.0",
+  "capture": {
+    "aspect": "1.33:1",
+    "iso": 3200,
+    "shutter": "1/30"
+  },
+  "color": {
+    "contrast": 1.35,
+    "saturation": 0,
+    "split_tone": {
+      "shadows": "#0B2A10",
+      "highlights": "#B8FF9A",
+      "balance": 0.0
+    }
+  },
+  "film": {
+    "grain": {
+      "amount": 0.7,
+      "size": 1.8
+    },
+    "vignette": 0.5
+  },
+  "overlays": [
+    {
+      "type": "rec_dot",
+      "anchor": "top-left"
+    },
+    {
+      "type": "timestamp",
+      "anchor": "top-right",
+      "font": "mono"
+    }
+  ]
+}
